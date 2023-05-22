@@ -149,7 +149,13 @@ const atualizarVoluntario = async function(dadosVoluntario, idVoluntario) {
         return message.ERROR_REQUIRED_ID
 
     } else {
-        //Recebe o id_genero inserido no POST
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await voluntarioDAO.selectVoluntarioById(idVoluntario)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+                //Recebe o id_genero inserido no POST
         let FK_genero = await generoDAO.selectGeneroById(dadosVoluntario.id_genero)
             //Valida se o id_genero existe no BD
         if (FK_genero == false)

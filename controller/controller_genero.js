@@ -98,7 +98,13 @@ const atualizarGenero = async function(dadosGenero, idGenero) {
         return message.ERROR_REQUIRED_ID
 
     } else {
-        //Adiciona o ID no JSON com todos os dados
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await generoDAO.selectGeneroById(idGenero)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+                //Adiciona o ID no JSON com todos os dados
         dadosGenero.id = idGenero
 
         //Encaminha para o DAO os dados para serem alterados

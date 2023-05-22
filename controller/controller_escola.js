@@ -123,6 +123,13 @@ const atualizarEscola = async function(dadosEscola, idEscola) {
         return message.ERROR_REQUIRED_ID
 
     } else {
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await escolaDAO.selectEscolaById(idEscola)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+
         //Recebe o id_endereco inserido no POST
         let FK_endereco = await enderecoDAO.selectEnderecoById(dadosEscola.id_endereco)
             //Valida se o id_endereco existe no BD

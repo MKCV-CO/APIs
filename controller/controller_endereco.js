@@ -112,6 +112,14 @@ const atualizarEndereco = async function(dadosEndereco, idEndereco) {
         return message.ERROR_REQUIRED_ID
 
     } else {
+
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await enderecoDAO.selectEnderecoById(idEndereco)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+
         let FK_cidade = await cidadeDAO.selectCidadeById(dadosEndereco.id_cidade)
 
         //Adiciona o ID no JSON com todos os dados

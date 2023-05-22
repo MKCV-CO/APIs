@@ -114,7 +114,13 @@ const atualizarPalestra = async function(dadosPalestra, idPalestra) {
     } else if (dadosPalestra.data == undefined || dadosPalestra.data == '' || validarDataMySQL(dadosPalestra.data) == false) {
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
-        //Adiciona o ID no JSON com todos os dados
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await palestraDAO.selectPalestraById(idPalestra)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+                //Adiciona o ID no JSON com todos os dados
         dadosPalestra.id = idPalestra
             //Encaminha para o DAO os dados para serem alterados
         let status = await palestraDAO.updatePalestra(dadosPalestra)

@@ -97,7 +97,12 @@ const atualizarBiomas = async function(dadosBioma, idBioma) {
         return message.ERROR_REQUIRED_ID
 
     } else {
-        //Adiciona o ID no JSON com todos os dados
+
+        let selectID = await biomaDAO.selectBiomaById(idBioma)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+                //Adiciona o ID no JSON com todos os dados
         dadosBioma.id = idBioma
 
 
