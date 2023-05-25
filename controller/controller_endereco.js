@@ -25,7 +25,7 @@ const selecionarTodosEnderecos = async function() {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
         dadosJson.count = dadosEnderecos.length
-        dadosJson.Enderecos = dadosEnderecos
+        dadosJson.enderecos = dadosEnderecos
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND
@@ -84,7 +84,7 @@ const inserirEndereco = async function(dadosEndereco) {
                 dadosEndereco.id = enderecoNovoId
 
                 dadosJson.status = message.CREATED_ITEM.status
-                dadosJson.voluntario = dadosEndereco
+                dadosJson.endereco = dadosEndereco
 
                 return dadosJson
             } else

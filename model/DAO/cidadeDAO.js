@@ -28,7 +28,13 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllCidades = async function() {
 
-    let sql = 'select * from tbl_cidade'
+    let sql = `select tbl_cidade.id as id_cidade,
+    tbl_cidade.nome as nome_cidade,
+    tbl_estado.id as id_estado,
+    tbl_estado.nome as nome_estado,
+    tbl_estado.sigla  
+    from tbl_cidade, tbl_estado 
+    where tbl_cidade.id_estado = tbl_estado.id`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -47,7 +53,14 @@ const selectAllCidades = async function() {
 const selectCidadeById = async function(id) {
 
 
-    let sql = `select * from tbl_cidade where id = ${id}`
+    let sql = `select tbl_cidade.id as id_cidade,
+    tbl_cidade.nome as nome_cidade,
+    tbl_estado.id as id_estado,
+    tbl_estado.nome as nome_estado,
+    tbl_estado.sigla  
+    from tbl_cidade, tbl_estado 
+    where tbl_cidade.id_estado = tbl_estado.id and 
+    tbl_cidade.id = ${id}`
 
     let rsCidade = await prisma.$queryRawUnsafe(sql)
 
@@ -64,7 +77,7 @@ const insertCidade = async function(dadosCidade) {
     //Script sql para inserir os dados no BD
     let sql = `insert into tbl_cidade(nome,id_estado)
         values
-        ('${dadosCidade.nome}',
+        lower(('${dadosCidade.nome}'),
         "${dadosCidade.id_estado}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
@@ -79,7 +92,7 @@ const insertCidade = async function(dadosCidade) {
 //Modifica um registro do banco de dados
 const updateCidade = async function(dadosCidade) {
     let sql = `update tbl_cidade set
-    nome='${dadosCidade.nome}',
+    nome= lower('${dadosCidade.nome}'),
     id_estado='${dadosCidade.id_estado}'
     where id = ${dadosCidade.id}`
 

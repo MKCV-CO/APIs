@@ -64,7 +64,7 @@ const insertBioma = async function(dadosBioma) {
     //Script sql para inserir os dados no BD
     let sql = `insert into tbl_bioma(nome)
         values
-        ('${dadosBioma.nome}')`
+        (lower('${dadosBioma.nome}'))`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -78,7 +78,7 @@ const insertBioma = async function(dadosBioma) {
 //Modifica um bioma do banco de dados
 const updateBioma = async function(dadosBioma) {
     let sql = `update tbl_bioma set
-    nome='${dadosBioma.nome}'
+    nome= lower('${dadosBioma.nome}')
     where id = ${dadosBioma.id}`
 
 

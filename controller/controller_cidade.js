@@ -25,7 +25,7 @@ const selecionarTodasCidades = async function() {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
         dadosJson.count = dadosCidade.length
-        dadosJson.Cidades = dadosCidade
+        dadosJson.cidades = dadosCidade
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND

@@ -24,7 +24,7 @@ const selecionarTodosBiomas = async function() {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
         dadosJson.count = dadosBiomas.length
-        dadosJson.Alunos = dadosBiomas
+        dadosJson.biomas = dadosBiomas
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND
@@ -49,7 +49,7 @@ const buscarIdBioma = async function(id) {
         if (dadosBioma) {
             //Adiciona o array de alunos em um JSON para retornar ao app
             dadosJson.status = 200
-            dadosJson.Bioma = dadosBioma
+            dadosJson.bioma = dadosBioma
             return dadosJson
         } else {
             return message.ERROR_NOT_FOUND
