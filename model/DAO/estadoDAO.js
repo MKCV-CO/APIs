@@ -58,14 +58,30 @@ const selectEstadoById = async function(id) {
         return false
 }
 
+//Retorna um bioma filtrado pelo id
+const selectEstadoBySigla = async function(sigla) {
+
+
+    let sql = `select id from tbl_estado where sigla = "${sigla}"`
+
+    let rsEstado = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEstado.length > 0)
+        return rsEstado
+    else
+        return false
+}
+
 //Inseri um novo registro no Banco de Dados
 const insertEstado = async function(dadosEstado) {
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_estado(nome,sigla)
+    let sql = `insert into tbl_estado(nome,sigla,regiao)
         values
         ('${dadosEstado.nome}',
-        "${dadosEstado.sigla}")`
+        '${dadosEstado.sigla}',
+        "${dadosEstado.regiao}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -117,5 +133,6 @@ module.exports = {
     insertEstado,
     selectLastId,
     updateEstado,
-    deleteEstado
+    deleteEstado,
+    selectEstadoBySigla
 }

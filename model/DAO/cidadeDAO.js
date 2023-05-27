@@ -77,8 +77,8 @@ const insertCidade = async function(dadosCidade) {
     //Script sql para inserir os dados no BD
     let sql = `insert into tbl_cidade(nome,id_estado)
         values
-        lower(('${dadosCidade.nome}'),
-        "${dadosCidade.id_estado}")`
+        ('${dadosCidade.nome}',
+        ${dadosCidade.id_estado})`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)

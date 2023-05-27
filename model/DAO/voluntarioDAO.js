@@ -68,24 +68,24 @@ const insertVoluntario = async function(dadosVoluntario) {
         email,
         telefone,
         data_nascimento,
-        estado_civil,
         foto_rg,
         foto_diploma,
         contribuicao,
         id_genero,
+        id_estado_civil,
         id_endereco
-        )values('${dadosVoluntario.nome}',
-        "${dadosVoluntario.cpf}",
-        "${dadosVoluntario.rg}",
-        "${dadosVoluntario.email}",
-        "${dadosVoluntario.telefone}",
-        "${dadosVoluntario.data_nascimento}",
-        "${dadosVoluntario.estado_civil}",
-        "${dadosVoluntario.foto_rg}",
-        "${dadosVoluntario.foto_diploma}",
-        "${dadosVoluntario.foto_contribuicao}",
-        ${dadosVoluntario.id_genero},
-        ${dadosVoluntario.id_endereco}
+        )values('${dadosVoluntario.voluntario.nome}',
+        "${dadosVoluntario.voluntario.cpf}",
+        "${dadosVoluntario.voluntario.rg}",
+        "${dadosVoluntario.voluntario.email}",
+        "${dadosVoluntario.voluntario.telefone}",
+        "${dadosVoluntario.voluntario.data_nascimento}",
+        "${dadosVoluntario.voluntario.contribuicao}",
+        "${dadosVoluntario.voluntario.foto_rg}",
+        "${dadosVoluntario.voluntario.foto_diploma}",
+        ${dadosVoluntario.voluntario.id_genero},
+        ${dadosVoluntario.voluntario.id_estado_civil},
+        ${dadosVoluntario.voluntario.id_endereco}
         )`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
@@ -106,11 +106,11 @@ const updateVoluntario = async function(dadosVoluntario) {
     email="${dadosVoluntario.email}",
     telefone="${dadosVoluntario.telefone}",
     data_nascimento="${dadosVoluntario.data_nascimento}",
-    estado_civil="${dadosVoluntario.estado_civil}",
     foto_rg="${dadosVoluntario.foto_rg}",
     foto_diploma="${dadosVoluntario.foto_diploma}",
     foto_diploma="${dadosVoluntario.contribuicao}",
     id_genero=${dadosVoluntario.id_genero},
+    id_estado_civil=${dadosVoluntario.id_estado_civil},
     id_endereco=${dadosVoluntario.id_endereco}
     where id = ${dadosVoluntario.id}`
 

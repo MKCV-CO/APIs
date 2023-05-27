@@ -43,6 +43,25 @@ const selectAllEndereco = async function() {
         return false
 }
 
+//Retorna todos os registros do Banco de Dados
+const selectCidadeByName = async function(nome) {
+
+    let sql = `select id from tbl_cidade where nome ="${nome}"`
+
+    //Executa no banco de dados o scriptSQL
+    //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
+    //$queryRaw é utilizado quando passar o script direto no métodos
+    //Ex: $queryRaw('select * from tbl_endereco')
+    let rsEndereco = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEndereco.length > 0)
+        return rsEndereco
+    else
+        return false
+}
+
+
 //Retorna um genero filtrado pelo id
 const selectEnderecoById = async function(id) {
 
@@ -70,12 +89,12 @@ const insertEndereco = async function(dadosEndereco) {
         bairro,
         id_cidade)
         values
-        ('${dadosEndereco.logradouro}',
-        "${dadosEndereco.cep}",
-        "${dadosEndereco.numero}",
-        "${dadosEndereco.complemento}",
-        "${dadosEndereco.bairro}",
-        ${dadosEndereco.id_cidade}
+        ('${dadosEndereco.endereco.logradouro}',
+        "${dadosEndereco.endereco.cep}",
+        "${dadosEndereco.endereco.numero}",
+        "${dadosEndereco.endereco.complemento}",
+        "${dadosEndereco.endereco.bairro}",
+        ${dadosEndereco.endereco.cidade}
         )`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
@@ -132,5 +151,6 @@ module.exports = {
     insertEndereco,
     selectLastId,
     updateEndereco,
-    deleteEndereco
+    deleteEndereco,
+    selectCidadeByName
 }

@@ -8,6 +8,8 @@
 //Import do arquivo de acesso ao BD
 const cidadeDAO = require('../model/DAO/cidadeDAO.js')
 const enderecoDAO = require('../model/DAO/enderecoDAO.js')
+const estadoDAO = require('../model/DAO/estadoDAO.js')
+const controllerEstado = require('./controller_estado.js')
 
 //Import do arquivo de glodal de configurações do projeto
 const message = require('./modulo/config.js')
@@ -61,42 +63,67 @@ const buscarIdEndereco = async function(id) {
 
 //Função para receber os dados do APP e enviar para a Model para inderir um novo item
 const inserirEndereco = async function(dadosEndereco) {
-
-
-    if (dadosEndereco.logradouro == undefined || dadosEndereco.logradouro == '' || dadosEndereco.logradouro.length > 100 ||
-        dadosEndereco.cep == undefined || dadosEndereco.cep == '' || dadosEndereco.cep.length > 10 ||
-        dadosEndereco.numero == undefined || dadosEndereco.numero == '' || dadosEndereco.numero.length > 10 ||
-        dadosEndereco.complemento == undefined || dadosEndereco.complemento == '' || dadosEndereco.complemento.length > 15 ||
-        dadosEndereco.bairro == undefined || dadosEndereco.bairro == '' || dadosEndereco.bairro.length > 50 ||
-        dadosEndereco.id_cidade == undefined || dadosEndereco.id_cidade == '' || isNaN(dadosEndereco.id_cidade)) {
-        return message.ERROR_REQUIRED_DATA
-    } else {
-
-        let FK_cidade = await cidadeDAO.selectCidadeById(dadosEndereco.id_cidade)
-
-        if (FK_cidade) {
-            let status = await enderecoDAO.insertEndereco(dadosEndereco)
-
-            if (status) {
-                let dadosJson = {}
-
-                let enderecoNovoId = await enderecoDAO.selectLastId()
-                dadosEndereco.id = enderecoNovoId
-
-                dadosJson.status = message.CREATED_ITEM.status
-                dadosJson.endereco = dadosEndereco
-
-                return dadosJson
-            } else
-                return message.ERROR_INTERNAL_SERVER
+        if (dadosEndereco.endereco.logradouro == undefined || dadosEndereco.endereco.logradouro == '' || dadosEndereco.endereco.logradouro.length > 100 ||
+            dadosEndereco.endereco.cep == undefined || dadosEndereco.endereco.cep == '' || dadosEndereco.endereco.cep.length > 10 ||
+            dadosEndereco.endereco.numero == undefined || dadosEndereco.endereco.numero == '' || dadosEndereco.endereco.numero.length > 10 ||
+            dadosEndereco.endereco.complemento == undefined || dadosEndereco.endereco.complemento == '' || dadosEndereco.endereco.complemento.length > 15 ||
+            dadosEndereco.endereco.bairro == undefined || dadosEndereco.endereco.bairro == '' || dadosEndereco.endereco.bairro.length > 50 ||
+            dadosEndereco.endereco.cidade == undefined || dadosEndereco.endereco.cidade == '' ||
+            dadosEndereco.endereco.estado == undefined || dadosEndereco.endereco.estado == '') {
+            return message.ERROR_REQUIRED_DATA
         } else {
-            return message.ERROR_NOT_FOUND_FK
+
+            let selectCidade = await enderecoDAO.selectCidadeByName(dadosEndereco.endereco.cidade)
+
+            if (selectCidade) {
+
+                dadosEndereco.endereco.cidade = selectCidade[0].id
+                let status = await enderecoDAO.insertEndereco(dadosEndereco)
+
+                if (status) {
+                    let dadosJson = {}
+
+                    let enderecoNovoId = await enderecoDAO.selectLastId()
+                    dadosEndereco.id = enderecoNovoId
+
+                    dadosJson.status = message.CREATED_ITEM.status
+                    dadosJson.endereco = dadosEndereco
+
+                    return dadosJson
+                } else
+                    return message.ERROR_INTERNAL_SERVER
+            } else {
+
+                let selectEstado = await estadoDAO.selectEstadoBySigla(dadosEndereco.endereco.estado)
+
+                if (selectEstado) {
+                    let cidadeJson = {
+                        "nome": `${dadosEndereco.endereco.cidade}`,
+                        "id_estado": `${selectEstado[0].id}`
+                    }
+                    let cidadeInexistente = await cidadeDAO.insertCidade(cidadeJson)
+
+                    if (cidadeInexistente) {
+                        let dadosJsonCidade = {}
+
+                        let cidadeNovoId = await cidadeDAO.selectLastId()
+                        dadosJsonCidade.id = cidadeNovoId
+
+                        dadosJsonCidade.status = message.CREATED_ITEM.status
+                        dadosJsonCidade.cidade = dadosJsonCidade
+
+                        return dadosJsonCidade
+                    } else
+                        return message.ERROR_INTERNAL_SERVER
+                } else {
+                    message.ERROR_STATE
+                }
+            }
+
         }
+
     }
-
-}
-
-//Função para receber os dados do APP e enviar para a Model para atualizar um item existente
+    //Função para receber os dados do APP e enviar para a Model para atualizar um item existente
 const atualizarEndereco = async function(dadosEndereco, idEndereco) {
 
     //Validação de dados

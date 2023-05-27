@@ -75,18 +75,18 @@ const buscarIdVoluntario = async function(id) {
 const inserirVoluntario = async function(dadosVoluntario) {
 
 
-    //Validação dos dados
-    if (dadosVoluntario.nome == undefined || dadosVoluntario.nome == '' || dadosVoluntario.nome.length > 150 ||
-        dadosVoluntario.cpf == undefined || dadosVoluntario.cpf == '' || dadosVoluntario.cpf.length > 18 ||
-        dadosVoluntario.rg == undefined || dadosVoluntario.rg == '' || dadosVoluntario.rg.length > 18 ||
-        dadosVoluntario.email == undefined || dadosVoluntario.email == '' || dadosVoluntario.email.length > 150 ||
-        dadosVoluntario.telefone == undefined || dadosVoluntario.telefone == '' || dadosVoluntario.telefone.length > 25 ||
-        dadosVoluntario.estado_civil == undefined || dadosVoluntario.estado_civil == '' || dadosVoluntario.estado_civil.length > 15 ||
-        dadosVoluntario.foto_rg == undefined || dadosVoluntario.foto_rg == '' || dadosVoluntario.foto_rg.length > 300 ||
-        dadosVoluntario.foto_diploma == undefined || dadosVoluntario.foto_diploma == '' || dadosVoluntario.foto_diploma.length > 300 ||
-        dadosVoluntario.contribuicao == undefined || dadosVoluntario.contribuicao == '' ||
-        dadosVoluntario.id_genero == undefined || dadosVoluntario.id_genero == '' || isNaN(dadosVoluntario.id_genero) ||
-        dadosVoluntario.id_endereco == undefined || dadosVoluntario.id_endereco == '' || isNaN(dadosVoluntario.id_endereco)) {
+    // Validação dos dados
+    if (dadosVoluntario.voluntario.nome == undefined || dadosVoluntario.voluntario.nome == '' || dadosVoluntario.voluntario.nome.length > 150 ||
+        dadosVoluntario.voluntario.cpf == undefined || dadosVoluntario.voluntario.cpf == '' || dadosVoluntario.voluntario.cpf.length > 18 ||
+        dadosVoluntario.voluntario.rg == undefined || dadosVoluntario.voluntario.rg == '' || dadosVoluntario.voluntario.rg.length > 18 ||
+        dadosVoluntario.voluntario.email == undefined || dadosVoluntario.voluntario.email == '' || dadosVoluntario.voluntario.email.length > 150 ||
+        dadosVoluntario.voluntario.telefone == undefined || dadosVoluntario.voluntario.telefone == '' || dadosVoluntario.voluntario.telefone.length > 25 ||
+        dadosVoluntario.voluntario.contribuicao == undefined || dadosVoluntario.voluntario.contribuicao == '' ||
+        dadosVoluntario.voluntario.foto_rg == undefined || dadosVoluntario.voluntario.foto_rg == '' || dadosVoluntario.voluntario.foto_rg.length > 300 ||
+        dadosVoluntario.voluntario.foto_diploma == undefined || dadosVoluntario.voluntario.foto_diploma == '' || dadosVoluntario.voluntario.foto_diploma.length > 300 ||
+        dadosVoluntario.voluntario.genero == undefined || dadosVoluntario.voluntario.genero == '' ||
+        dadosVoluntario.voluntario.id_endereco == undefined || dadosVoluntario.voluntario.id_endereco == '' || isNaN(dadosVoluntario.voluntario.id_endereco) ||
+        dadosVoluntario.voluntario.id_endereco == undefined || dadosVoluntario.voluntario.id_endereco == '' || isNaN(dadosVoluntario.voluntario.id_endereco)) {
 
         return message.ERROR_REQUIRED_DATA
 
@@ -94,17 +94,6 @@ const inserirVoluntario = async function(dadosVoluntario) {
     } else if (dadosVoluntario.data_nascimento == undefined || dadosVoluntario.data_nascimento == '' || validarDataMySQL(dadosVoluntario.data_nascimento) == false) {
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
-
-        //Recebe o id_genero inserido no POST
-        let FK_genero = await generoDAO.selectGeneroById(dadosVoluntario.id_genero)
-            //Valida se o id_genero existe no BD
-        if (FK_genero == false)
-            return message.ERROR_NOT_FOUND_FK
-                //Recebe o id_endereco inserido no POST
-        let FK_endereco = await enderecoDAO.selectEnderecoById(dadosVoluntario.id_endereco)
-            //Valida se o id_endereco existe no BD
-        if (FK_endereco == false)
-            return message.ERROR_NOT_FOUND_FK
 
         let status = await voluntarioDAO.insertVoluntario(dadosVoluntario)
 
@@ -134,7 +123,7 @@ const atualizarVoluntario = async function(dadosVoluntario, idVoluntario) {
         dadosVoluntario.rg == undefined || dadosVoluntario.rg == '' || dadosVoluntario.rg.length > 18 ||
         dadosVoluntario.email == undefined || dadosVoluntario.email == '' || dadosVoluntario.email.length > 150 ||
         dadosVoluntario.telefone == undefined || dadosVoluntario.telefone == '' || dadosVoluntario.telefone.length > 25 ||
-        dadosVoluntario.estado_civil == undefined || dadosVoluntario.estado_civil == '' || dadosVoluntario.estado_civil.length > 15 ||
+        dadosVoluntario.contribuicao == undefined || dadosVoluntario.contribuicao == '' ||
         dadosVoluntario.foto_rg == undefined || dadosVoluntario.foto_rg == '' || dadosVoluntario.foto_rg.length > 300 ||
         dadosVoluntario.foto_diploma == undefined || dadosVoluntario.foto_diploma == '' || dadosVoluntario.foto_diploma.length > 300 ||
         dadosVoluntario.contribuicao == undefined || dadosVoluntario.contribuicao == '' ||
