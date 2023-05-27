@@ -127,53 +127,99 @@ const inserirEndereco = async function(dadosEndereco) {
 const atualizarEndereco = async function(dadosEndereco, idEndereco) {
 
     //Validação de dados
-    if (dadosEndereco.logradouro == undefined || dadosEndereco.logradouro == '' || dadosEndereco.logradouro.length > 100 ||
-        dadosEndereco.cep == undefined || dadosEndereco.cep == '' || dadosEndereco.cep.length > 10 ||
-        dadosEndereco.numero == undefined || dadosEndereco.numero == '' || dadosEndereco.numero.length > 10 ||
+    if (dadosEndereco.endereco.logradouro == undefined || dadosEndereco.endereco.logradouro == '' || dadosEndereco.endereco.logradouro.length > 100 ||
+        dadosEndereco.endereco.cep == undefined || dadosEndereco.endereco.cep == '' || dadosEndereco.endereco.cep.length > 10 ||
+        dadosEndereco.endereco.numero == undefined || dadosEndereco.endereco.numero == '' || dadosEndereco.endereco.numero.length > 10 ||
+        dadosEndereco.endereco.complemento == undefined || dadosEndereco.endereco.complemento == '' || dadosEndereco.endereco.complemento.length > 15 ||
+        dadosEndereco.endereco.bairro == undefined || dadosEndereco.endereco.bairro == '' || dadosEndereco.endereco.bairro.length > 50 ||
+        dadosEndereco.endereco.cidade == undefined || dadosEndereco.endereco.cidade == '' ||
+        dadosEndereco.endereco.estado == undefined || dadosEndereco.endereco.estado == '') {
 
-        dadosEndereco.bairro == undefined || dadosEndereco.bairro == '' || dadosEndereco.bairro.length > 50 ||
-        dadosEndereco.id_cidade == undefined || dadosEndereco.id_cidade == '' || isNaN(dadosEndereco.id_cidade)) {
-        return message.ERROR_REQUIRED_DATA
-            //Validação para o id
-    } else if (idEndereco == '' || idEndereco == undefined || isNaN(idEndereco)) {
+            return message.ERROR_REQUIRED_DATA
+    }
+    //Validação para o id
+    else if (idEndereco == '' || idEndereco == undefined || isNaN(idEndereco)) {
         return message.ERROR_REQUIRED_ID
 
     } else {
 
-
         //Validação para ver se o registro passado existe no bd
         let selectID = await enderecoDAO.selectEnderecoById(idEndereco)
+
 
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
 
-        let FK_cidade = await cidadeDAO.selectCidadeById(dadosEndereco.id_cidade)
+        
+        let selectCidade = await enderecoDAO.selectCidadeByName(dadosEndereco.endereco.cidade)
 
-        //Adiciona o ID no JSON com todos os dados
-        dadosEndereco.id = idEndereco
-        if (FK_cidade) {
+        if (selectCidade) {
 
+            dadosEndereco.endereco.cidade = selectCidade[0].id
 
+            //Adiciona o ID no JSON com todos os dados
+            dadosEndereco.id = idEndereco
             //Encaminha para o DAO os dados para serem alterados
             let status = await enderecoDAO.updateEndereco(dadosEndereco)
 
             if (status) {
                 let dadosJson = {}
                 dadosJson.status = message.UPDATED_ITEM.status
-                dadosJson.endereco = dadosEndereco
-
-                return dadosJson
-
-            } else {
+                dadosJson.dadosEndereco = dadosEndereco
+                    return dadosJson
+            } 
+            else {
                 return message.ERROR_INTERNAL_SERVER
-
             }
-        } else {
-            return message.ERROR_NOT_FOUND_FK
         }
+        else{
+
+            let selectEstado = await estadoDAO.selectEstadoBySigla(dadosEndereco.endereco.estado)
+
+            if (selectEstado) {
+                let cidadeJson = {
+                    "nome": `${dadosEndereco.endereco.cidade}`,
+                    "id_estado": `${selectEstado[0].id}`
+                }
+                let cidadeInexistente = await cidadeDAO.insertCidade(cidadeJson)
+            
+
+                if (cidadeInexistente) {
+                    let dadosJsonCidade = {}
+
+                    let cidadeNovoId = await cidadeDAO.selectLastId()
+                    dadosJsonCidade.id = cidadeNovoId
+                
+                    dadosJsonCidade.status = message.CREATED_ITEM.status
+                    
+                                      
+                    dadosEndereco.endereco.cidade = dadosJsonCidade.id
+                    dadosEndereco.id = idEndereco
+                    
+                    let status = await enderecoDAO.updateEndereco(dadosEndereco)
+
+
+                    if (status) {
+                        let dadosJson = {}
+                        dadosJson.status = message.UPDATED_ITEM.status
+                        dadosJson.dadosEndereco = dadosEndereco
+                            return dadosJson
+                            
+                    } 
+                    else {
+                        return message.ERROR_INTERNAL_SERVER
+                    }
+                    
+                } else
+                    return message.ERROR_INTERNAL_SERVER
+            } else {
+                message.ERROR_STATE
+            }
+        } 
 
     }
 }
+
 
 //Função para excluir um aluno filtrado pelo ID, será encaminhado para a Model
 const deletarEndereco = async function(dadosEndereco, id) {

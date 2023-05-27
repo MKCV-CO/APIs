@@ -109,15 +109,14 @@ const insertEndereco = async function(dadosEndereco) {
 //Modifica um registro do banco de dados
 const updateEndereco = async function(dadosEndereco) {
     let sql = `update tbl_endereco set
-    logradouro='${dadosEndereco.logradouro}',
-    cep='${dadosEndereco.cep}',
-    numero='${dadosEndereco.numero}',
-    complemento = '${dadosEndereco.complemento}',
-    bairro='${dadosEndereco.bairro}',
-    id_cidade='${dadosEndereco.id_cidade}'
+    logradouro='${dadosEndereco.endereco.logradouro}',
+    cep=    '${dadosEndereco.endereco.cep}',
+    numero= '${dadosEndereco.endereco.numero}',
+    complemento = '${dadosEndereco.endereco.complemento}',
+    bairro='${dadosEndereco.endereco.bairro}',
+    id_cidade='${dadosEndereco.endereco.cidade}'
     where id = ${dadosEndereco.id}`
-
-
+console.log(dadosEndereco);
     let result = await prisma.$queryRawUnsafe(sql)
 
 

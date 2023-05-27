@@ -83,6 +83,10 @@ const inserirEscola = async function(dadosEscola) {
         return message.ERROR_REQUIRED_DATA
 
     } else {
+
+
+        
+
         //Recebe o id_endereco inserido no POST
         let FK_endereco = await enderecoDAO.selectEnderecoById(dadosEscola.id_endereco)
             //Valida se o id_endereco existe no BD
