@@ -8,7 +8,7 @@
 //Import do arquivo de acesso ao BD
 const voluntarioDAO = require('../model/DAO/voluntarioDAO.js')
 const enderecoDAO = require('../model/DAO/enderecoDAO.js')
-const generoDAO = require('../model/DAO/generoDAO.js')
+const controllerEndereco = require('./controller_endereco.js')
 
 //Função para validar a data
 function validarDataMySQL(data) {
@@ -74,7 +74,7 @@ const buscarIdVoluntario = async function(id) {
 //Função para receber os dados do APP e enviar para a Model para inderir um novo item
 const inserirVoluntario = async function(dadosVoluntario) {
 
-
+    
     // Validação dos dados
     if (dadosVoluntario.voluntario.nome == undefined || dadosVoluntario.voluntario.nome == '' || dadosVoluntario.voluntario.nome.length > 150 ||
         dadosVoluntario.voluntario.cpf == undefined || dadosVoluntario.voluntario.cpf == '' || dadosVoluntario.voluntario.cpf.length > 18 ||
@@ -84,17 +84,22 @@ const inserirVoluntario = async function(dadosVoluntario) {
         dadosVoluntario.voluntario.contribuicao == undefined || dadosVoluntario.voluntario.contribuicao == '' ||
         dadosVoluntario.voluntario.foto_rg == undefined || dadosVoluntario.voluntario.foto_rg == '' || dadosVoluntario.voluntario.foto_rg.length > 300 ||
         dadosVoluntario.voluntario.foto_diploma == undefined || dadosVoluntario.voluntario.foto_diploma == '' || dadosVoluntario.voluntario.foto_diploma.length > 300 ||
-        dadosVoluntario.voluntario.genero == undefined || dadosVoluntario.voluntario.genero == '' ||
-        dadosVoluntario.voluntario.id_endereco == undefined || dadosVoluntario.voluntario.id_endereco == '' || isNaN(dadosVoluntario.voluntario.id_endereco) ||
-        dadosVoluntario.voluntario.id_endereco == undefined || dadosVoluntario.voluntario.id_endereco == '' || isNaN(dadosVoluntario.voluntario.id_endereco)) {
+        dadosVoluntario.voluntario.id_genero == undefined || dadosVoluntario.voluntario.id_genero == '' || isNaN(dadosVoluntario.voluntario.id_genero) ||
+        dadosVoluntario.voluntario.id_estado_civil == undefined || dadosVoluntario.voluntario.id_estado_civil == '' || isNaN(dadosVoluntario.voluntario.id_estado_civil)) {
 
         return message.ERROR_REQUIRED_DATA
 
         //Validação da data
-    } else if (dadosVoluntario.data_nascimento == undefined || dadosVoluntario.data_nascimento == '' || validarDataMySQL(dadosVoluntario.data_nascimento) == false) {
+    } else if (dadosVoluntario.voluntario.data_nascimento == undefined || dadosVoluntario.voluntario.data_nascimento == '' || validarDataMySQL(dadosVoluntario.voluntario.data_nascimento) == false) {
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
+        
+       
+        controllerEndereco.inserirEndereco(dadosVoluntario)
+        let selectEndereco = await enderecoDAO.selectLastId()
+        console.log(selectEndereco);
 
+        dadosVoluntario.voluntario.id_endereco = selectEndereco
         let status = await voluntarioDAO.insertVoluntario(dadosVoluntario)
 
         if (status) {

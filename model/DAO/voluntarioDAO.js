@@ -61,6 +61,7 @@ const selectVoluntarioById = async function(id) {
 //Insere um novo registro no Banco de Dados
 const insertVoluntario = async function(dadosVoluntario) {
 
+    console.log(dadosVoluntario);
     //Script sql para inserir os dados no BD
     let sql = `insert into tbl_voluntario(nome,
         cpf,
