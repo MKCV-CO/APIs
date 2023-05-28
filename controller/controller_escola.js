@@ -104,10 +104,11 @@ const inserirEscola = async function(dadosEscola) {
 const atualizarEscola = async function(dadosEscola, idEscola) {
 
     //Validação dos dados
-    if (dadosEscola.nome == undefined || dadosEscola.nome == '' || dadosEscola.nome.length > 100 ||
-        dadosEscola.cnpj == undefined || dadosEscola.cnpj == '' || dadosEscola.cnpj.length > 30 ||
-        dadosEscola.responsavel == undefined || dadosEscola.responsavel == '' || dadosEscola.responsavel.length > 100 ||
-        dadosEscola.id_endereco == undefined || dadosEscola.id_endereco == '' || isNaN(dadosEscola.id_endereco)) {
+    if (dadosEscola.escola.nome == undefined || dadosEscola.escola.nome == '' || dadosEscola.escola.nome.length > 100 ||
+        dadosEscola.escola.cnpj == undefined || dadosEscola.escola.cnpj == '' || dadosEscola.escola.cnpj.length > 30 ||
+        dadosEscola.escola.email == undefined || dadosEscola.escola.email == '' || dadosEscola.escola.email.length > 255 ||
+        dadosEscola.escola.telefone == undefined || dadosEscola.escola.telefone == '' || dadosEscola.escola.telefone.length > 15 ||
+        dadosEscola.escola.responsavel == undefined || dadosEscola.escola.responsavel == '' || dadosEscola.escola.responsavel.length > 100) {
 
         return message.ERROR_REQUIRED_DATA
 
@@ -122,14 +123,10 @@ const atualizarEscola = async function(dadosEscola, idEscola) {
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
 
-        //Recebe o id_endereco inserido no POST
-        let FK_endereco = await enderecoDAO.selectEnderecoById(dadosEscola.id_endereco)
-            //Valida se o id_endereco existe no BD
-        if (FK_endereco == false)
-            return message.ERROR_NOT_FOUND_FK
+        controllerEndereco.atualizarEndereco(dadosEscola, dadosEscola.endereco.id_endereco)
 
         //Adiciona o ID no JSON com todos os dados
-        dadosEscola.id = idEscola
+        dadosEscola.escola.id = idEscola
             //Encaminha para o DAO os dados para serem alterados
         let status = await escolaDAO.updateEscola(dadosEscola)
 

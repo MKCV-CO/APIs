@@ -82,12 +82,16 @@ const insertEscola = async function(dadosEscola) {
 
 //Modifica um registro do banco de dados
 const updateEscola = async function(dadosEscola) {
+
+    console.log(dadosEscola);
     let sql = `update tbl_escola set
-    nome='${dadosEscola.nome}',
-    cnpj='${dadosEscola.cnpj}',
-    responsavel='${dadosEscola.responsavel}',
-    id_endereco='${dadosEscola.id_endereco}'
-    where id = ${dadosEscola.id}`
+    nome='${dadosEscola.escola.nome}',
+    cnpj='${dadosEscola.escola.cnpj}',
+    responsavel='${dadosEscola.escola.responsavel}',
+    email='${dadosEscola.escola.email}',
+    telefone='${dadosEscola.escola.telefone}',
+    id_endereco='${dadosEscola.endereco.id_endereco}'
+    where id = ${dadosEscola.escola.id}`
 
 
     let result = await prisma.$queryRawUnsafe(sql)
