@@ -62,12 +62,14 @@ const selectEscolaById = async function(id) {
 const insertEscola = async function(dadosEscola) {
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_escola(nome, cnpj, responsavel, id_endereco)
+    let sql = `insert into tbl_escola(nome, cnpj, responsavel,email,telefone, id_endereco)
         values
-        ('${dadosEscola.nome}',
-        '${dadosEscola.cnpj}',
-        '${dadosEscola.responsavel}',
-        "${dadosEscola.id_endereco}")`
+        ('${dadosEscola.escola.nome}',
+        '${dadosEscola.escola.cnpj}',
+        '${dadosEscola.escola.responsavel}',
+        '${dadosEscola.escola.email}',
+        '${dadosEscola.escola.telefone}',
+        "${dadosEscola.escola.id_endereco}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)

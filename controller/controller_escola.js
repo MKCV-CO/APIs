@@ -8,17 +8,7 @@
 //Import do arquivo de acesso ao BD
 const escolaDAO = require('../model/DAO/escolaDAO.js')
 const enderecoDAO = require('../model/DAO/enderecoDAO.js')
-
-//Função para validar a data
-function validarDataMySQL(data) {
-    // Expressão regular para verificar o formato da data (AAAA-MM-DD)
-    var regex = /^\d{4}-\d{2}-\d{2}$/;
-
-    // Verifica o formato da data
-    if (!regex.test(data)) {
-        return false;
-    }
-}
+const controllerEndereco = require('./controller_endereco.js')
 
 //Import do arquivo de glodal de configurações do projeto
 const message = require('./modulo/config.js')
@@ -75,24 +65,22 @@ const inserirEscola = async function(dadosEscola) {
 
 
     //Validação dos dados
-    if (dadosEscola.nome == undefined || dadosEscola.nome == '' || dadosEscola.nome.length > 100 ||
-        dadosEscola.cnpj == undefined || dadosEscola.cnpj == '' || dadosEscola.cnpj.length > 30 ||
-        dadosEscola.responsavel == undefined || dadosEscola.responsavel == '' || dadosEscola.responsavel.length > 100 ||
-        dadosEscola.id_endereco == undefined || dadosEscola.id_endereco == '' || isNaN(dadosEscola.id_endereco)) {
+    if (dadosEscola.escola.nome == undefined || dadosEscola.escola.nome == '' || dadosEscola.escola.nome.length > 100 ||
+        dadosEscola.escola.cnpj == undefined || dadosEscola.escola.cnpj == '' || dadosEscola.escola.cnpj.length > 30 ||
+        dadosEscola.escola.email == undefined || dadosEscola.escola.email == '' || dadosEscola.escola.email.length > 255 ||
+        dadosEscola.escola.telefone == undefined || dadosEscola.escola.telefone == '' || dadosEscola.escola.telefone.length > 15 ||
+        dadosEscola.escola.responsavel == undefined || dadosEscola.escola.responsavel == '' || dadosEscola.escola.responsavel.length > 100) {
 
         return message.ERROR_REQUIRED_DATA
 
     } else {
+        controllerEndereco.inserirEndereco(dadosEscola)
 
+        let selectEndereco = await enderecoDAO.selectLastId()
 
-        
+        console.log(selectEndereco);
 
-        //Recebe o id_endereco inserido no POST
-        let FK_endereco = await enderecoDAO.selectEnderecoById(dadosEscola.id_endereco)
-            //Valida se o id_endereco existe no BD
-        if (FK_endereco == false)
-            return message.ERROR_NOT_FOUND_FK
-
+        dadosEscola.escola.id_endereco = selectEndereco
         let status = await escolaDAO.insertEscola(dadosEscola)
 
         if (status) {
