@@ -78,6 +78,38 @@ const selectEnderecoById = async function(id) {
     tbl_estado.sigla as sigla_estado,
     tbl_estado.regiao
     from 
+    tbl_endereco,
+    tbl_cidade,
+    tbl_estado
+    where 
+    tbl_endereco.id = ${id} and
+    tbl_cidade.id = tbl_endereco.id_cidade and
+    tbl_estado.id = tbl_cidade.id_estado;`
+
+    let rsEndereco = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEndereco.length > 0)
+        return rsEndereco
+    else
+        return false
+}
+const selectEnderecoByIdVoluntario = async function(id) {
+
+
+    let sql = `select tbl_endereco.id as id_endereco,
+    tbl_endereco.logradouro,
+    tbl_endereco.cep,
+    tbl_endereco.numero,
+    tbl_endereco.complemento,
+    tbl_endereco.bairro,
+    tbl_endereco.id_cidade,
+    tbl_cidade.nome as cidade,
+    tbl_cidade.id_estado,
+    tbl_estado.nome as estado,
+    tbl_estado.sigla as sigla_estado,
+    tbl_estado.regiao
+    from 
     tbl_voluntario, 
     tbl_endereco,
     tbl_cidade,
@@ -85,6 +117,40 @@ const selectEnderecoById = async function(id) {
     where 
     tbl_voluntario.id = ${id} and
     tbl_voluntario.id_endereco = tbl_endereco.id and
+     tbl_cidade.id = tbl_endereco.id_cidade and
+     tbl_estado.id = tbl_cidade.id_estado;`
+
+    let rsEndereco = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEndereco.length > 0)
+        return rsEndereco
+    else
+        return false
+}
+const selectEnderecoByIdEscola = async function(id) {
+
+
+    let sql = `select tbl_endereco.id as id_endereco,
+    tbl_endereco.logradouro,
+    tbl_endereco.cep,
+    tbl_endereco.numero,
+    tbl_endereco.complemento,
+    tbl_endereco.bairro,
+    tbl_endereco.id_cidade,
+    tbl_cidade.nome as cidade,
+    tbl_cidade.id_estado,
+    tbl_estado.nome as estado,
+    tbl_estado.sigla as sigla_estado,
+    tbl_estado.regiao
+    from 
+    tbl_escola, 
+    tbl_endereco,
+    tbl_cidade,
+    tbl_estado
+    where 
+    tbl_escola.id = ${id} and
+    tbl_escola.id_endereco = tbl_endereco.id and
      tbl_cidade.id = tbl_endereco.id_cidade and
      tbl_estado.id = tbl_cidade.id_estado;`
 
@@ -166,6 +232,8 @@ const deleteEndereco = async function(id) {
 module.exports = {
     selectAllEndereco,
     selectEnderecoById,
+    selectEnderecoByIdVoluntario,
+    selectEnderecoByIdEscola,
     insertEndereco,
     selectLastId,
     updateEndereco,

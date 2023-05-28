@@ -45,7 +45,7 @@ const selecionarTodosVoluntarios = async function() {
         while (i < dadosVoluntarios.length) {
 
             let genero = await generoDAO.selectGeneroById(dadosVoluntarios[i].id)
-            let endereco = await enderecoDAO.selectEnderecoById(dadosVoluntarios[i].id)
+            let endereco = await enderecoDAO.selectEnderecoByIdVoluntario(dadosVoluntarios[i].id)
 
             dadosLista.push({ "voluntario": dadosVoluntarios[i], genero, endereco })
             i++
@@ -71,7 +71,6 @@ const buscarIdVoluntario = async function(id) {
         let dadosVoluntario = await voluntarioDAO.selectVoluntarioById(id)
 
         let dadosAcumuladosJson = {}
-        let dadosLista = []
 
         //Valida se BD teve registros
         if (dadosVoluntario) {
@@ -80,7 +79,7 @@ const buscarIdVoluntario = async function(id) {
             dadosAcumuladosJson.count = dadosVoluntario.length
 
             let genero = await generoDAO.selectGeneroById(dadosVoluntario[0].id)
-            let endereco = await enderecoDAO.selectEnderecoById(dadosVoluntario[0].id)
+            let endereco = await enderecoDAO.selectEnderecoByIdVoluntario(dadosVoluntario[0].id)
             let voluntario = dadosVoluntario
 
             dadosAcumuladosJson.dados = { voluntario, genero, endereco }
@@ -199,9 +198,7 @@ const deletarVoluntario = async function(dadosVoluntario, id) {
     } else {
         dadosVoluntario.id = id
 
-        let voluntario = await enderecoDAO.selectEnderecoById(id)
-
-        console.log();
+        let voluntario = await enderecoDAO.selectEnderecoByIdVoluntario(id)
 
         let status = await voluntarioDAO.deleteVoluntario(id)
         let endereco = await enderecoDAO.deleteEndereco(voluntario[0].id_endereco)

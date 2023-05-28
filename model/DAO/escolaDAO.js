@@ -28,7 +28,16 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllEscola = async function() {
 
-    let sql = 'select * from tbl_escola'
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola;`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -47,7 +56,18 @@ const selectAllEscola = async function() {
 const selectEscolaById = async function(id) {
 
 
-    let sql = `select * from tbl_escola where id = ${id}`
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola
+    where 
+    tbl_escola.id = ${id};`
 
     let rsEscola = await prisma.$queryRawUnsafe(sql)
 

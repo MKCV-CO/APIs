@@ -19,15 +19,27 @@ const selecionarTodasEscolas = async function() {
     //Solicita ao DAO todas as cidades do BD
     let dadosEscola = await escolaDAO.selectAllEscola()
         //Cria um objeto do tipo json
-    let dadosJson = {}
+    let dadosAcumuladosJson = {}
+    let dadosLista = []
 
     //Valida se BD teve registros
     if (dadosEscola) {
         //Adiciona o array de alunos em um JSON para retornar ao app
-        dadosJson.status = 200
-        dadosJson.count = dadosEscola.length
-        dadosJson.escola = dadosEscola
-        return dadosJson
+        dadosAcumuladosJson.status = 200
+        dadosAcumuladosJson.count = dadosEscola.length
+
+        let i = 0
+        while (i < dadosEscola.length) {
+
+            let endereco = await enderecoDAO.selectEnderecoByIdEscola(dadosEscola[i].id)
+
+            dadosLista.push({ "escola": dadosEscola[i], endereco })
+            i++
+        }
+
+
+        dadosAcumuladosJson.dadosEscolas = dadosLista
+        return dadosAcumuladosJson
     } else {
         return message.ERROR_NOT_FOUND
     }
@@ -45,19 +57,24 @@ const buscarIdEscola = async function(id) {
         let dadosEscola = await escolaDAO.selectEscolaById(id)
 
         //Cria um objeto do tipo json
-        let dadosJson = {}
+        let dadosAcumuladosJson = {}
 
         //Valida se BD teve registros
         if (dadosEscola) {
-            //Adiciona o array de cidades em um JSON para retornar ao app
-            dadosJson.status = 200
-            dadosJson.escola = dadosEscola
-            return dadosJson
+            //Adiciona o array de alunos em um JSON para retornar ao app
+            dadosAcumuladosJson.status = 200
+            dadosAcumuladosJson.count = dadosEscola.length
+
+            let endereco = await enderecoDAO.selectEnderecoByIdEscola(dadosEscola[0].id)
+            let escola = dadosEscola
+
+            dadosAcumuladosJson.dados = { escola, endereco }
+            return dadosAcumuladosJson
         } else {
             return message.ERROR_NOT_FOUND
+
         }
     }
-
 }
 
 //Função para receber os dados do APP e enviar para a Model para inderir um novo item
@@ -153,7 +170,12 @@ const deletarEscola = async function(dadosEscola, id) {
         return message.ERROR_REQUIRED_ID
     } else {
         dadosEscola.id = id
+
+        let escola = await enderecoDAO.selectEnderecoByIdEscola(id)
+
         let status = await escolaDAO.deleteEscola(id)
+        let endereco = await enderecoDAO.deleteEndereco(escola[0].id_endereco)
+
 
         if (status) {
             return message.DELETED_ITEM
@@ -162,6 +184,7 @@ const deletarEscola = async function(dadosEscola, id) {
 
         }
     }
+
 
 }
 
