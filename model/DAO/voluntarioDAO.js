@@ -101,19 +101,19 @@ const insertVoluntario = async function(dadosVoluntario) {
 //Modifica um registro do banco de dados
 const updateVoluntario = async function(dadosVoluntario) {
     let sql = `update tbl_voluntario set
-    nome='${dadosVoluntario.nome}',
-    cpf="${dadosVoluntario.cpf}",
-    rg="${dadosVoluntario.rg}",
-    email="${dadosVoluntario.email}",
-    telefone="${dadosVoluntario.telefone}",
-    data_nascimento="${dadosVoluntario.data_nascimento}",
-    foto_rg="${dadosVoluntario.foto_rg}",
-    foto_diploma="${dadosVoluntario.foto_diploma}",
-    foto_diploma="${dadosVoluntario.contribuicao}",
-    id_genero=${dadosVoluntario.id_genero},
-    id_estado_civil=${dadosVoluntario.id_estado_civil},
-    id_endereco=${dadosVoluntario.id_endereco}
-    where id = ${dadosVoluntario.id}`
+    nome='${dadosVoluntario.voluntario.nome}',
+    cpf="${dadosVoluntario.voluntario.cpf}",
+    rg="${dadosVoluntario.voluntario.rg}",
+    email="${dadosVoluntario.voluntario.email}",
+    telefone="${dadosVoluntario.voluntario.telefone}",
+    data_nascimento="${dadosVoluntario.voluntario.data_nascimento}",
+    foto_rg="${dadosVoluntario.voluntario.foto_rg}",
+    foto_diploma="${dadosVoluntario.voluntario.foto_diploma}",
+    foto_diploma="${dadosVoluntario.voluntario.contribuicao}",
+    id_genero=${dadosVoluntario.voluntario.id_genero},
+    id_estado_civil=${dadosVoluntario.voluntario.id_estado_civil},
+    id_endereco=${dadosVoluntario.endereco.id_endereco}
+    where id = ${dadosVoluntario.voluntario.id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 
