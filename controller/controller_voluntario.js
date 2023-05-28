@@ -8,6 +8,8 @@
 //Import do arquivo de acesso ao BD
 const voluntarioDAO = require('../model/DAO/voluntarioDAO.js')
 const enderecoDAO = require('../model/DAO/enderecoDAO.js')
+const generoDAO = require('../model/DAO/generoDAO.js')
+
 const controllerEndereco = require('./controller_endereco.js')
 
 //Função para validar a data
@@ -30,15 +32,28 @@ const selecionarTodosVoluntarios = async function() {
     //Solicita ao DAO todas as cidades do BD
     let dadosVoluntarios = await voluntarioDAO.selectAllVoluntario()
         //Cria um objeto do tipo json
-    let dadosJson = {}
+    let dadosAcumuladosJson = {}
+    let dadosLista = []
 
     //Valida se BD teve registros
     if (dadosVoluntarios) {
         //Adiciona o array de alunos em um JSON para retornar ao app
-        dadosJson.status = 200
-        dadosJson.count = dadosVoluntarios.length
-        dadosJson.Voluntarios = dadosVoluntarios
-        return dadosJson
+        dadosAcumuladosJson.status = 200
+        dadosAcumuladosJson.count = dadosVoluntarios.length
+
+        let i = 0
+        while (i < dadosVoluntarios.length) {
+
+            let genero = await generoDAO.selectGeneroById(dadosVoluntarios[i].id)
+            let endereco = await enderecoDAO.selectEnderecoById(dadosVoluntarios[i].id)
+
+            dadosLista.push({ "voluntario": dadosVoluntarios[i], genero, endereco })
+            i++
+        }
+
+
+        dadosAcumuladosJson.dadosVoluntarios = dadosLista
+        return dadosAcumuladosJson
     } else {
         return message.ERROR_NOT_FOUND
     }
@@ -55,17 +70,24 @@ const buscarIdVoluntario = async function(id) {
         //Solicita ao DAO todos os alunos do BD
         let dadosVoluntario = await voluntarioDAO.selectVoluntarioById(id)
 
-        //Cria um objeto do tipo json
-        let dadosJson = {}
+        let dadosAcumuladosJson = {}
+        let dadosLista = []
 
         //Valida se BD teve registros
         if (dadosVoluntario) {
-            //Adiciona o array de cidades em um JSON para retornar ao app
-            dadosJson.status = 200
-            dadosJson.voluntario = dadosVoluntario
-            return dadosJson
+            //Adiciona o array de alunos em um JSON para retornar ao app
+            dadosAcumuladosJson.status = 200
+            dadosAcumuladosJson.count = dadosVoluntario.length
+
+            let genero = await generoDAO.selectGeneroById(dadosVoluntario[0].id)
+            let endereco = await enderecoDAO.selectEnderecoById(dadosVoluntario[0].id)
+            let voluntario = dadosVoluntario
+
+            dadosAcumuladosJson.dados = { voluntario, genero, endereco }
+            return dadosAcumuladosJson
         } else {
             return message.ERROR_NOT_FOUND
+
         }
     }
 
@@ -97,7 +119,6 @@ const inserirVoluntario = async function(dadosVoluntario) {
 
         controllerEndereco.inserirEndereco(dadosVoluntario)
         let selectEndereco = await enderecoDAO.selectLastId()
-        console.log(selectEndereco);
 
         dadosVoluntario.voluntario.id_endereco = selectEndereco
         let status = await voluntarioDAO.insertVoluntario(dadosVoluntario)
@@ -177,7 +198,14 @@ const deletarVoluntario = async function(dadosVoluntario, id) {
         return message.ERROR_REQUIRED_ID
     } else {
         dadosVoluntario.id = id
+
+        let voluntario = await enderecoDAO.selectEnderecoById(id)
+
+        console.log();
+
         let status = await voluntarioDAO.deleteVoluntario(id)
+        let endereco = await enderecoDAO.deleteEndereco(voluntario[0].id_endereco)
+
 
         if (status) {
             return message.DELETED_ITEM

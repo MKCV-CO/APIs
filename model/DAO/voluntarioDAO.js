@@ -28,7 +28,18 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllVoluntario = async function() {
 
-    let sql = 'select * from tbl_voluntario'
+    let sql = `select tbl_voluntario.id,
+    tbl_voluntario.nome,
+    tbl_voluntario.cpf,
+    tbl_voluntario.rg,
+    tbl_voluntario.email,
+    tbl_voluntario.telefone,
+    tbl_voluntario.data_nascimento,
+    tbl_voluntario.foto_rg,
+    tbl_voluntario.foto_diploma,
+    tbl_voluntario.contribuicao
+    from 
+    tbl_voluntario; `
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -47,7 +58,20 @@ const selectAllVoluntario = async function() {
 const selectVoluntarioById = async function(id) {
 
 
-    let sql = `select * from tbl_voluntario where id = ${id}`
+    let sql = `select tbl_voluntario.id,
+    tbl_voluntario.nome,
+    tbl_voluntario.cpf,
+    tbl_voluntario.rg,
+    tbl_voluntario.email,
+    tbl_voluntario.telefone,
+    tbl_voluntario.data_nascimento,
+    tbl_voluntario.foto_rg,
+    tbl_voluntario.foto_diploma,
+    tbl_voluntario.contribuicao
+    from 
+    tbl_voluntario 
+    where
+    tbl_voluntario.id = ${id}; `
 
     let rsVoluntario = await prisma.$queryRawUnsafe(sql)
 
@@ -61,7 +85,6 @@ const selectVoluntarioById = async function(id) {
 //Insere um novo registro no Banco de Dados
 const insertVoluntario = async function(dadosVoluntario) {
 
-    console.log(dadosVoluntario);
     //Script sql para inserir os dados no BD
     let sql = `insert into tbl_voluntario(nome,
         cpf,

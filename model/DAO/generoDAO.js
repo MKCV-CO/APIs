@@ -46,8 +46,11 @@ const selectAllGenero = async function() {
 //Retorna um genero filtrado pelo id
 const selectGeneroById = async function(id) {
 
-
-    let sql = `select * from tbl_genero where id = ${id}`
+    let sql = `  select tbl_genero.id as id_genero,
+    tbl_genero.nome  as genero,
+    tbl_genero.sigla as sigla_genero
+    from
+    tbl_voluntario, tbl_genero where tbl_voluntario.id = ${id} and tbl_genero.id = tbl_voluntario.id_genero;`
 
     let rsGenero = await prisma.$queryRawUnsafe(sql)
 

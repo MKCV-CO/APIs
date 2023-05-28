@@ -61,12 +61,32 @@ const selectCidadeByName = async function(nome) {
         return false
 }
 
-
 //Retorna um genero filtrado pelo id
 const selectEnderecoById = async function(id) {
 
 
-    let sql = `select * from tbl_endereco where id = ${id}`
+    let sql = `select tbl_endereco.id as id_endereco,
+    tbl_endereco.logradouro,
+    tbl_endereco.cep,
+    tbl_endereco.numero,
+    tbl_endereco.complemento,
+    tbl_endereco.bairro,
+    tbl_endereco.id_cidade,
+    tbl_cidade.nome as cidade,
+    tbl_cidade.id_estado,
+    tbl_estado.nome as estado,
+    tbl_estado.sigla as sigla_estado,
+    tbl_estado.regiao
+    from 
+    tbl_voluntario, 
+    tbl_endereco,
+    tbl_cidade,
+    tbl_estado
+    where 
+    tbl_voluntario.id = ${id} and
+    tbl_voluntario.id_endereco = tbl_endereco.id and
+     tbl_cidade.id = tbl_endereco.id_cidade and
+     tbl_estado.id = tbl_cidade.id_estado;`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
 
@@ -116,7 +136,6 @@ const updateEndereco = async function(dadosEndereco) {
     bairro='${dadosEndereco.endereco.bairro}',
     id_cidade='${dadosEndereco.endereco.cidade}'
     where id = ${dadosEndereco.id}`
-console.log(dadosEndereco);
     let result = await prisma.$queryRawUnsafe(sql)
 
 
