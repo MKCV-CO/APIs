@@ -86,12 +86,24 @@ const inserirEscola = async function(dadosEscola) {
         dadosEscola.escola.cnpj == undefined || dadosEscola.escola.cnpj == '' || dadosEscola.escola.cnpj.length > 30 ||
         dadosEscola.escola.email == undefined || dadosEscola.escola.email == '' || dadosEscola.escola.email.length > 255 ||
         dadosEscola.escola.telefone == undefined || dadosEscola.escola.telefone == '' || dadosEscola.escola.telefone.length > 15 ||
+        dadosEscola.endereco.logradouro == undefined || dadosEscola.endereco.logradouro == '' || dadosEscola.endereco.logradouro.length > 100 ||
+        dadosEscola.endereco.cep == undefined || dadosEscola.endereco.cep == '' || dadosEscola.endereco.cep.length > 10 ||
+        dadosEscola.endereco.numero == undefined || dadosEscola.endereco.numero == '' || dadosEscola.endereco.numero.length > 10 ||
+        dadosEscola.endereco.complemento == undefined || dadosEscola.endereco.complemento == '' || dadosEscola.endereco.complemento.length > 15 ||
+        dadosEscola.endereco.bairro == undefined || dadosEscola.endereco.bairro == '' || dadosEscola.endereco.bairro.length > 50 ||
+        dadosEscola.endereco.cidade == undefined || dadosEscola.endereco.cidade == '' || 
+        dadosEscola.endereco.estado == undefined || dadosEscola.endereco.estado == '' || 
         dadosEscola.escola.responsavel == undefined || dadosEscola.escola.responsavel == '' || dadosEscola.escola.responsavel.length > 100) {
 
         return message.ERROR_REQUIRED_DATA
 
     } else {
-        controllerEndereco.inserirEndereco(dadosEscola)
+        let endereco =await controllerEndereco.inserirEndereco(dadosEscola)
+        console.log(dadosEscola);
+        console.log(dadosEscola.endereco);
+        
+        console.log(endereco);
+        
 
         let selectEndereco = await enderecoDAO.selectLastId()
 
