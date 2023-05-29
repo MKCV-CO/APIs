@@ -76,6 +76,37 @@ const buscarIdEscola = async function(id) {
         }
     }
 }
+const buscarNomeEscola = async function(nome) {
+
+    
+    
+    //Validação para o ID
+    if (nome == '' || nome == undefined)
+        return message.ERROR_REQUIRED_ID
+    else {
+        //Solicita ao DAO todos os alunos do BD
+        let dadosEscola = await escolaDAO.selectEscolaByNome(nome)
+
+        //Cria um objeto do tipo json
+        let dadosAcumuladosJson = {}
+
+        //Valida se BD teve registros
+        if (dadosEscola) {
+            //Adiciona o array de alunos em um JSON para retornar ao app
+            dadosAcumuladosJson.status = 200
+            dadosAcumuladosJson.count = dadosEscola.length
+
+            let endereco = await enderecoDAO.selectEnderecoByIdEscola(dadosEscola[0].id)
+            let escola = dadosEscola
+
+            dadosAcumuladosJson.dados = { escola }
+            return dadosAcumuladosJson
+        } else {
+            return message.ERROR_NOT_FOUND
+
+        }
+    }
+}
 
 //Função para receber os dados do APP e enviar para a Model para inderir um novo item
 const inserirEscola = async function(dadosEscola) {
@@ -199,5 +230,6 @@ module.exports = {
     buscarIdEscola,
     inserirEscola,
     atualizarEscola,
-    deletarEscola
+    deletarEscola,
+    buscarNomeEscola
 }

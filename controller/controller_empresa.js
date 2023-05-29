@@ -58,6 +58,30 @@ const buscarIdEmpresa = async function(id) {
     }
 
 }
+const buscarNome = async function(nome) {
+
+    //Validação para o ID
+    if (nome == '' || nome == undefined )
+        return message.ERROR_REQUIRED_ID
+    else {
+        //Solicita ao DAO todos os alunos do BD
+        let dadosEmpresa = await empresaDAO.selectByNomeEmpresa(nome)
+
+        //Cria um objeto do tipo json
+        let dadosJson = {}
+
+        //Valida se BD teve registros
+        if (dadosEmpresa) {
+            //Adiciona o array de alunos em um JSON para retornar ao app
+            dadosJson.status = 200
+            dadosJson.Empresas = dadosEmpresa
+            return dadosJson
+        } else {
+            return message.ERROR_NOT_FOUND
+        }
+    }
+
+}
 
 const inserirEmpresa = async function(dadosEmpresa) {
 
@@ -157,6 +181,7 @@ module.exports = {
     buscarIdEmpresa,
     inserirEmpresa,
     atualizarEmpresa,
-    deletarEmpresa
+    deletarEmpresa,
+    buscarNome
     
 }

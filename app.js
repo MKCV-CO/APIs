@@ -201,6 +201,21 @@ app.get('/v1/cultural-path/empresa', cors(), async function(request, response) {
     response.json(dados)
 
  });
+// ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO ID
+ app.get('/v1/cultural-path/empresa-nome', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let nomeEmpresa = request.query.nome
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controllerEmpresa.buscarNome(nomeEmpresa)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
 
 // ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE EMPRESA
  app.post('/v1/cultural-path/empresa',bodyJSON, cors(),async function(request,response){
@@ -247,7 +262,7 @@ app.put('/v1/cultural-path/empresa/:id',cors(),bodyJSON, async function(request,
 })
 
 // ENDPOINT: DELETA O REGISTRO DA TABELA PELO ID
-app.delete('/v1/cultural-path/Empresa/:id', cors(), bodyJSON, async function(request, response) {
+app.delete('/v1/cultural-path/empresa/:id', cors(), bodyJSON, async function(request, response) {
     //Recebe os dados do Body
     let dadosBody = request.body
 
@@ -1417,6 +1432,22 @@ app.delete('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async functi
 
      //Solicita a controller que retorne a cidade filtrada pelo ID do BD
      let dados = await controllerEscola.buscarIdEscola(idEscola)
+
+     //Valida se existem registros para retornar na requisição
+     response.status(dados.status)
+
+     response.json(dados)
+ })
+ //EndPoint: Retorna dados do voluntario pelo ID
+ app.get('/v1/cultural-path/escola-nome', cors(), async function(request, response,next) {
+
+     //Recebe o id enviado na requisição
+     let nomeEscola = request.query.nome
+     
+     
+
+     //Solicita a controller que retorne a cidade filtrada pelo ID do BD
+     let dados = await controllerEscola.buscarNomeEscola(nomeEscola)
 
      //Valida se existem registros para retornar na requisição
      response.status(dados.status)
