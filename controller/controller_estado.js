@@ -99,7 +99,13 @@ const atualizarEstado = async function(dadosEstado, idEstado) {
         return message.ERROR_REQUIRED_ID
 
     } else {
-        //Adiciona o ID no JSON com todos os dados
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await estadoDAO.selectEstadoById(idEstado)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+                //Adiciona o ID no JSON com todos os dados
         dadosEstado.id = idEstado
 
 

@@ -8,17 +8,7 @@
 //Import do arquivo de acesso ao BD
 const escolaDAO = require('../model/DAO/escolaDAO.js')
 const enderecoDAO = require('../model/DAO/enderecoDAO.js')
-
-//Função para validar a data
-function validarDataMySQL(data) {
-    // Expressão regular para verificar o formato da data (AAAA-MM-DD)
-    var regex = /^\d{4}-\d{2}-\d{2}$/;
-
-    // Verifica o formato da data
-    if (!regex.test(data)) {
-        return false;
-    }
-}
+const controllerEndereco = require('./controller_endereco.js')
 
 //Import do arquivo de glodal de configurações do projeto
 const message = require('./modulo/config.js')
@@ -29,15 +19,27 @@ const selecionarTodasEscolas = async function() {
     //Solicita ao DAO todas as cidades do BD
     let dadosEscola = await escolaDAO.selectAllEscola()
         //Cria um objeto do tipo json
-    let dadosJson = {}
+    let dadosAcumuladosJson = {}
+    let dadosLista = []
 
     //Valida se BD teve registros
     if (dadosEscola) {
         //Adiciona o array de alunos em um JSON para retornar ao app
-        dadosJson.status = 200
-        dadosJson.count = dadosEscola.length
-        dadosJson.escola = dadosEscola
-        return dadosJson
+        dadosAcumuladosJson.status = 200
+        dadosAcumuladosJson.count = dadosEscola.length
+
+        let i = 0
+        while (i < dadosEscola.length) {
+
+            let endereco = await enderecoDAO.selectEnderecoByIdEscola(dadosEscola[i].id)
+
+            dadosLista.push({ "escola": dadosEscola[i], endereco })
+            i++
+        }
+
+
+        dadosAcumuladosJson.dadosEscolas = dadosLista
+        return dadosAcumuladosJson
     } else {
         return message.ERROR_NOT_FOUND
     }
@@ -55,19 +57,24 @@ const buscarIdEscola = async function(id) {
         let dadosEscola = await escolaDAO.selectEscolaById(id)
 
         //Cria um objeto do tipo json
-        let dadosJson = {}
+        let dadosAcumuladosJson = {}
 
         //Valida se BD teve registros
         if (dadosEscola) {
-            //Adiciona o array de cidades em um JSON para retornar ao app
-            dadosJson.status = 200
-            dadosJson.escola = dadosEscola
-            return dadosJson
+            //Adiciona o array de alunos em um JSON para retornar ao app
+            dadosAcumuladosJson.status = 200
+            dadosAcumuladosJson.count = dadosEscola.length
+
+            let endereco = await enderecoDAO.selectEnderecoByIdEscola(dadosEscola[0].id)
+            let escola = dadosEscola
+
+            dadosAcumuladosJson.dados = { escola, endereco }
+            return dadosAcumuladosJson
         } else {
             return message.ERROR_NOT_FOUND
+
         }
     }
-
 }
 
 //Função para receber os dados do APP e enviar para a Model para inderir um novo item
@@ -75,20 +82,28 @@ const inserirEscola = async function(dadosEscola) {
 
 
     //Validação dos dados
-    if (dadosEscola.nome == undefined || dadosEscola.nome == '' || dadosEscola.nome.length > 100 ||
-        dadosEscola.cnpj == undefined || dadosEscola.cnpj == '' || dadosEscola.cnpj.length > 30 ||
-        dadosEscola.responsavel == undefined || dadosEscola.responsavel == '' || dadosEscola.responsavel.length > 100 ||
-        dadosEscola.id_endereco == undefined || dadosEscola.id_endereco == '' || isNaN(dadosEscola.id_endereco)) {
+    if (dadosEscola.escola.nome == undefined || dadosEscola.escola.nome == '' || dadosEscola.escola.nome.length > 100 ||
+        dadosEscola.escola.cnpj == undefined || dadosEscola.escola.cnpj == '' || dadosEscola.escola.cnpj.length > 30 ||
+        dadosEscola.escola.email == undefined || dadosEscola.escola.email == '' || dadosEscola.escola.email.length > 255 ||
+        dadosEscola.escola.telefone == undefined || dadosEscola.escola.telefone == '' || dadosEscola.escola.telefone.length > 15 ||
+        dadosEscola.endereco.logradouro == undefined || dadosEscola.endereco.logradouro == '' || dadosEscola.endereco.logradouro.length > 100 ||
+        dadosEscola.endereco.cep == undefined || dadosEscola.endereco.cep == '' || dadosEscola.endereco.cep.length > 10 ||
+        dadosEscola.endereco.numero == undefined || dadosEscola.endereco.numero == '' || dadosEscola.endereco.numero.length > 10 ||
+        dadosEscola.endereco.complemento == undefined || dadosEscola.endereco.complemento == '' || dadosEscola.endereco.complemento.length > 15 ||
+        dadosEscola.endereco.bairro == undefined || dadosEscola.endereco.bairro == '' || dadosEscola.endereco.bairro.length > 50 ||
+        dadosEscola.endereco.cidade == undefined || dadosEscola.endereco.cidade == '' || 
+        dadosEscola.endereco.estado == undefined || dadosEscola.endereco.estado == '' || 
+        dadosEscola.escola.responsavel == undefined || dadosEscola.escola.responsavel == '' || dadosEscola.escola.responsavel.length > 100) {
 
         return message.ERROR_REQUIRED_DATA
 
     } else {
-        //Recebe o id_endereco inserido no POST
-        let FK_endereco = await enderecoDAO.selectEnderecoById(dadosEscola.id_endereco)
-            //Valida se o id_endereco existe no BD
-        if (FK_endereco == false)
-            return message.ERROR_NOT_FOUND_FK
+        let endereco = await controllerEndereco.inserirEndereco(dadosEscola)
 
+        let selectEndereco = await enderecoDAO.selectLastId()
+        
+
+        dadosEscola.escola.id_endereco = selectEndereco
         let status = await escolaDAO.insertEscola(dadosEscola)
 
         if (status) {
@@ -112,10 +127,11 @@ const inserirEscola = async function(dadosEscola) {
 const atualizarEscola = async function(dadosEscola, idEscola) {
 
     //Validação dos dados
-    if (dadosEscola.nome == undefined || dadosEscola.nome == '' || dadosEscola.nome.length > 100 ||
-        dadosEscola.cnpj == undefined || dadosEscola.cnpj == '' || dadosEscola.cnpj.length > 30 ||
-        dadosEscola.responsavel == undefined || dadosEscola.responsavel == '' || dadosEscola.responsavel.length > 100 ||
-        dadosEscola.id_endereco == undefined || dadosEscola.id_endereco == '' || isNaN(dadosEscola.id_endereco)) {
+    if (dadosEscola.escola.nome == undefined || dadosEscola.escola.nome == '' || dadosEscola.escola.nome.length > 100 ||
+        dadosEscola.escola.cnpj == undefined || dadosEscola.escola.cnpj == '' || dadosEscola.escola.cnpj.length > 30 ||
+        dadosEscola.escola.email == undefined || dadosEscola.escola.email == '' || dadosEscola.escola.email.length > 255 ||
+        dadosEscola.escola.telefone == undefined || dadosEscola.escola.telefone == '' || dadosEscola.escola.telefone.length > 15 ||
+        dadosEscola.escola.responsavel == undefined || dadosEscola.escola.responsavel == '' || dadosEscola.escola.responsavel.length > 100) {
 
         return message.ERROR_REQUIRED_DATA
 
@@ -123,14 +139,17 @@ const atualizarEscola = async function(dadosEscola, idEscola) {
         return message.ERROR_REQUIRED_ID
 
     } else {
-        //Recebe o id_endereco inserido no POST
-        let FK_endereco = await enderecoDAO.selectEnderecoById(dadosEscola.id_endereco)
-            //Valida se o id_endereco existe no BD
-        if (FK_endereco == false)
-            return message.ERROR_NOT_FOUND_FK
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await escolaDAO.selectEscolaById(idEscola)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+
+        controllerEndereco.atualizarEndereco(dadosEscola, dadosEscola.endereco.id_endereco)
 
         //Adiciona o ID no JSON com todos os dados
-        dadosEscola.id = idEscola
+        dadosEscola.escola.id = idEscola
             //Encaminha para o DAO os dados para serem alterados
         let status = await escolaDAO.updateEscola(dadosEscola)
 
@@ -157,7 +176,12 @@ const deletarEscola = async function(dadosEscola, id) {
         return message.ERROR_REQUIRED_ID
     } else {
         dadosEscola.id = id
+
+        let escola = await enderecoDAO.selectEnderecoByIdEscola(id)
+
         let status = await escolaDAO.deleteEscola(id)
+        let endereco = await enderecoDAO.deleteEndereco(escola[0].id_endereco)
+
 
         if (status) {
             return message.DELETED_ITEM
@@ -166,6 +190,7 @@ const deletarEscola = async function(dadosEscola, id) {
 
         }
     }
+
 
 }
 

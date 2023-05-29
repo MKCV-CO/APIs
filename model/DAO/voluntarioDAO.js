@@ -28,7 +28,18 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllVoluntario = async function() {
 
-    let sql = 'select * from tbl_voluntario'
+    let sql = `select tbl_voluntario.id,
+    tbl_voluntario.nome,
+    tbl_voluntario.cpf,
+    tbl_voluntario.rg,
+    tbl_voluntario.email,
+    tbl_voluntario.telefone,
+    tbl_voluntario.data_nascimento,
+    tbl_voluntario.foto_rg,
+    tbl_voluntario.foto_diploma,
+    tbl_voluntario.contribuicao
+    from 
+    tbl_voluntario; `
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -47,7 +58,20 @@ const selectAllVoluntario = async function() {
 const selectVoluntarioById = async function(id) {
 
 
-    let sql = `select * from tbl_voluntario where id = ${id}`
+    let sql = `select tbl_voluntario.id,
+    tbl_voluntario.nome,
+    tbl_voluntario.cpf,
+    tbl_voluntario.rg,
+    tbl_voluntario.email,
+    tbl_voluntario.telefone,
+    tbl_voluntario.data_nascimento,
+    tbl_voluntario.foto_rg,
+    tbl_voluntario.foto_diploma,
+    tbl_voluntario.contribuicao
+    from 
+    tbl_voluntario 
+    where
+    tbl_voluntario.id = ${id}; `
 
     let rsVoluntario = await prisma.$queryRawUnsafe(sql)
 
@@ -68,24 +92,24 @@ const insertVoluntario = async function(dadosVoluntario) {
         email,
         telefone,
         data_nascimento,
-        estado_civil,
         foto_rg,
         foto_diploma,
         contribuicao,
         id_genero,
+        id_estado_civil,
         id_endereco
-        )values('${dadosVoluntario.nome}',
-        "${dadosVoluntario.cpf}",
-        "${dadosVoluntario.rg}",
-        "${dadosVoluntario.email}",
-        "${dadosVoluntario.telefone}",
-        "${dadosVoluntario.data_nascimento}",
-        "${dadosVoluntario.estado_civil}",
-        "${dadosVoluntario.foto_rg}",
-        "${dadosVoluntario.foto_diploma}",
-        "${dadosVoluntario.foto_contribuicao}",
-        ${dadosVoluntario.id_genero},
-        ${dadosVoluntario.id_endereco}
+        )values('${dadosVoluntario.voluntario.nome}',
+        "${dadosVoluntario.voluntario.cpf}",
+        "${dadosVoluntario.voluntario.rg}",
+        "${dadosVoluntario.voluntario.email}",
+        "${dadosVoluntario.voluntario.telefone}",
+        "${dadosVoluntario.voluntario.data_nascimento}",
+        "${dadosVoluntario.voluntario.contribuicao}",
+        "${dadosVoluntario.voluntario.foto_rg}",
+        "${dadosVoluntario.voluntario.foto_diploma}",
+        ${dadosVoluntario.voluntario.id_genero},
+        ${dadosVoluntario.voluntario.id_estado_civil},
+        ${dadosVoluntario.voluntario.id_endereco}
         )`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
@@ -100,19 +124,19 @@ const insertVoluntario = async function(dadosVoluntario) {
 //Modifica um registro do banco de dados
 const updateVoluntario = async function(dadosVoluntario) {
     let sql = `update tbl_voluntario set
-    nome='${dadosVoluntario.nome}',
-    cpf="${dadosVoluntario.cpf}",
-    rg="${dadosVoluntario.rg}",
-    email="${dadosVoluntario.email}",
-    telefone="${dadosVoluntario.telefone}",
-    data_nascimento="${dadosVoluntario.data_nascimento}",
-    estado_civil="${dadosVoluntario.estado_civil}",
-    foto_rg="${dadosVoluntario.foto_rg}",
-    foto_diploma="${dadosVoluntario.foto_diploma}",
-    foto_diploma="${dadosVoluntario.contribuicao}",
-    id_genero=${dadosVoluntario.id_genero},
-    id_endereco=${dadosVoluntario.id_endereco}
-    where id = ${dadosVoluntario.id}`
+    nome='${dadosVoluntario.voluntario.nome}',
+    cpf="${dadosVoluntario.voluntario.cpf}",
+    rg="${dadosVoluntario.voluntario.rg}",
+    email="${dadosVoluntario.voluntario.email}",
+    telefone="${dadosVoluntario.voluntario.telefone}",
+    data_nascimento="${dadosVoluntario.voluntario.data_nascimento}",
+    foto_rg="${dadosVoluntario.voluntario.foto_rg}",
+    foto_diploma="${dadosVoluntario.voluntario.foto_diploma}",
+    foto_diploma="${dadosVoluntario.voluntario.contribuicao}",
+    id_genero=${dadosVoluntario.voluntario.id_genero},
+    id_estado_civil=${dadosVoluntario.voluntario.id_estado_civil},
+    id_endereco=${dadosVoluntario.endereco.id_endereco}
+    where id = ${dadosVoluntario.voluntario.id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 

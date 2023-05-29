@@ -25,7 +25,7 @@ const selecionarTodasCidades = async function() {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
         dadosJson.count = dadosCidade.length
-        dadosJson.Cidades = dadosCidade
+        dadosJson.cidades = dadosCidade
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND
@@ -105,6 +105,14 @@ const atualizarCidade = async function(dadosCidade, idCidade) {
         return message.ERROR_REQUIRED_ID
 
     } else {
+
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await cidadeDAO.selectCidadeById(idCidade)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+
         let FK_estado = await estadoDAO.selectEstadoById(dadosCidade.id_estado)
 
         //Adiciona o ID no JSON com todos os dados

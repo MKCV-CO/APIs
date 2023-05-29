@@ -13,7 +13,9 @@ const ERROR_INVALID_CONTENT_TYPE = { status: 415, message: 'Tipo de mídia {cont
 const ERROR_NOT_FOUND = { status: 404, message: 'Nenhum registro encontrado na requisição.' }
 const ERROR_REQUIRED_NAME = { status: 400, message: 'O atributo nome é obrigatório na requisição.' }
 const ERROR_NOT_FOUND_FK = { status: 404, message: 'Nenhum registro de FK foi encontrado' }
-const ERROR_INVALID_DATE_FORMAT = { status: 404, message: 'A data deve ser inserida no formato AAAA-MM-DD' }
+const ERROR_NOT_FOUND_ID = { status: 404, message: 'Nenhum registro de id foi encontrado' }
+const ERROR_STATE = { status: 404, message: 'Este estado não existe no banco de dados' }
+const ERROR_INVALID_DATE_FORMAT = { status: 400, message: 'A data deve ser inserida no formato AAAA-MM-DD' }
 
 
 //Constantes de sucessos
@@ -32,5 +34,7 @@ module.exports = {
     ERROR_NOT_FOUND,
     ERROR_REQUIRED_NAME,
     ERROR_NOT_FOUND_FK,
-    ERROR_INVALID_DATE_FORMAT
+    ERROR_INVALID_DATE_FORMAT,
+    ERROR_NOT_FOUND_ID,
+    ERROR_STATE
 }

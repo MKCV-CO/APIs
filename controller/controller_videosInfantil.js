@@ -1,30 +1,32 @@
 /************************************************************************************
  * Objetvo: Implementa a regra de negócio entre o app e a model
- * Autores: Cleiton / MKVC
- * Data: 20/05/2023
+ * Autor: Kaue - MKVC
+ * Data: 21/05/2023
  * Versão: 1.0
  ************************************************************************************/
 
-//Import do arquivo de acesso ao BD
-const biomaDAO = require('../model/DAO/biomaDAO.js')
 
-//Import do arquivo de glodal de configurações do projeto
+const videosDAO = require('../model/DAO/videosInfantilDAO.js');
+
 const message = require('./modulo/config.js')
 
 //Função para retornar todos os itens da tabela recebidos da Model
-const selecionarTodosBiomas = async function() {
+const selecionarTodosOsVideosInfantil = async function() {
 
-    //Solicita ao DAO todos os biomas do BD
-    let dadosBiomas = await biomaDAO.selectAllBiomas()
-        //Cria um objeto do tipo json
+
+    //Solicita ao DAO todos as empresas do BD
+    let dadosVideos = await videosDAO.selectAllVideosInfantil()
+
+    
+    //Cria um objeto do tipo json
     let dadosJson = {}
 
     //Valida se BD teve registros
-    if (dadosBiomas) {
+    if (dadosVideos) {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
-        dadosJson.count = dadosBiomas.length
-        dadosJson.biomas = dadosBiomas
+        dadosJson.count =   dadosVideos.length
+        dadosJson.videos = dadosVideos
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND
@@ -32,24 +34,23 @@ const selecionarTodosBiomas = async function() {
 
 }
 
-//Função para buscar um item filtrado pelo ID, que será encaminhado pela Model
-const buscarIdBioma = async function(id) {
+const buscarIdVideo = async function(id) {
 
     //Validação para o ID
     if (id == '' || id == undefined || isNaN(id))
         return message.ERROR_REQUIRED_ID
     else {
         //Solicita ao DAO todos os alunos do BD
-        let dadosBioma = await biomaDAO.selectBiomaById(id)
+        let dadosVideos = await videosDAO.selectByIdVideo(id)
 
         //Cria um objeto do tipo json
         let dadosJson = {}
 
         //Valida se BD teve registros
-        if (dadosBioma) {
+        if (dadosVideos) {
             //Adiciona o array de alunos em um JSON para retornar ao app
             dadosJson.status = 200
-            dadosJson.bioma = dadosBioma
+            dadosJson.Url = dadosVideos
             return dadosJson
         } else {
             return message.ERROR_NOT_FOUND
@@ -58,24 +59,25 @@ const buscarIdBioma = async function(id) {
 
 }
 
-//Função para receber os dados do APP e enviar para a Model para inderir um novo item
-const inserirBioma = async function(dadosBioma) {
+const inserirVideo = async function(dadosVideos) {
 
-
-    if (dadosBioma.nome == undefined || dadosBioma.nome == '' || dadosBioma.nome.length > 100) {
+    if (dadosVideos.titulo == undefined || dadosVideos.titulo == " " || dadosVideos.titulo > 300 ||
+        dadosVideos.descricao == undefined || dadosVideos.descricao == "" || dadosVideos.descricao > 500 ||
+        dadosVideos.url == undefined || dadosVideos.url == "" || dadosVideos.url > 500
+    ) {
         return message.ERROR_REQUIRED_DATA
     } else {
         //Envia os dados para a model a serem inseridos no BD
-        let status = await biomaDAO.insertBioma(dadosBioma)
+        let status = await videosDAO.insertVideoInfatil(dadosVideos)
 
         if (status) {
             let dadosJson = {}
 
-            let biomaNovoId = await biomaDAO.selectLastId()
-            dadosBioma.id = biomaNovoId
+            let videoNovoId = await videosDAO.selectLastId()
+            dadosVideos.id = videoNovoId
 
             dadosJson.status = message.CREATED_ITEM.status
-            dadosJson.bioma = dadosBioma
+            dadosJson.video = dadosVideos
 
             return dadosJson
         } else
@@ -85,34 +87,38 @@ const inserirBioma = async function(dadosBioma) {
 
 }
 
-//Função para receber os dados do APP e enviar para a Model para atualizar um item existente
-const atualizarBiomas = async function(dadosBioma, idBioma) {
+const atualizarVideos = async function(dadosVideos, idVideo) {
 
     //Validação de dados
-    if (dadosBioma.nome == undefined || dadosBioma.nome == '' || dadosBioma.nome.length > 100) {
+    if (dadosVideos.titulo == undefined || dadosVideos.titulo == " " || dadosVideos.titulo > 300 ||
+        dadosVideos.descricao == undefined || dadosVideos.descricao == "" || dadosVideos.descricao > 500 ||
+        dadosVideos.url == undefined || dadosVideos.url == "" || dadosVideos.url > 500
+    ) {
         return message.ERROR_REQUIRED_DATA
 
         //Validação para o id
-    } else if (idBioma == '' || idBioma == undefined || isNaN(idBioma)) {
+    } else if (idVideo == '' || idVideo == undefined || isNaN(idVideo)) {
         return message.ERROR_REQUIRED_ID
 
     } else {
 
-        let selectID = await biomaDAO.selectBiomaById(idBioma)
+        let selectId = await videosDAO.selectByIdVideo(idVideo)
 
-        if (selectID == false)
+        if(selectId == false){
             return message.ERROR_NOT_FOUND_ID
-                //Adiciona o ID no JSON com todos os dados
-        dadosBioma.id = idBioma
+        }
+        //Adiciona o ID no JSON com todos os dados
+        dadosVideos.id = idVideo
 
 
         //Encaminha para o DAO os dados para serem alterados
-        let status = await biomaDAO.updateBioma(dadosBioma)
+        let status = await videosDAO.updateVideo(dadosVideos)
+
 
         if (status) {
             let dadosJson = {}
             dadosJson.status = message.UPDATED_ITEM.status
-            dadosJson.bioma = dadosBioma
+            dadosJson.video = dadosVideos
 
             return dadosJson
 
@@ -123,15 +129,14 @@ const atualizarBiomas = async function(dadosBioma, idBioma) {
     }
 }
 
-//Função para excluir um aluno filtrado pelo ID, será encaminhado para a Model
-const deletarBiomas = async function(dadosBioma, id) {
+const deletarFoto = async function(dadosVideos, id) {
 
     if (id == '' || id == undefined || isNaN(id)) {
         return message.ERROR_REQUIRED_ID
     } else {
-        console.log(id);
-        dadosBioma.id = id
-        let status = await biomaDAO.deleteBioma(id)
+        let status = await videosDAO.deleteVideo(id)
+
+        dadosVideos.id = id
 
         if (status) {
             return message.DELETED_ITEM
@@ -144,9 +149,9 @@ const deletarBiomas = async function(dadosBioma, id) {
 }
 
 module.exports = {
-    selecionarTodosBiomas,
-    buscarIdBioma,
-    inserirBioma,
-    atualizarBiomas,
-    deletarBiomas
+    selecionarTodosOsVideosInfantil,
+    buscarIdVideo,
+    inserirVideo,
+    atualizarVideos,
+    deletarFoto
 }

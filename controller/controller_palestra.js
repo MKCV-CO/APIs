@@ -20,7 +20,8 @@ function validarDataMySQL(data) {
 }
 
 //Import do arquivo de glodal de configurações do projeto
-const message = require('./modulo/config.js')
+const message = require('./modulo/config.js');
+const escolaDAO = require('../model/DAO/escolaDAO.js');
 
 //Função para retornar todos os itens da tabela recebidos da Model
 const selecionarTodasPalestras = async function() {
@@ -80,9 +81,11 @@ const inserirPalestra = async function(dadosPalestra) {
         return message.ERROR_REQUIRED_DATA
 
         //Validação da data
-    } else if (dadosPalestra.data == undefined || dadosPalestra.data == '' || validarDataMySQL(dadosPalestra.data) == false) {
+    } else if (dadosPalestra.data_palestra == undefined || dadosPalestra.data_palestra == '' || validarDataMySQL(dadosPalestra.data_palestra) == false) {
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
+
+        let escola = await escolaDAO.selectEscolaByIdPalestra(dadosPalestra)
 
         let status = await palestraDAO.insertPalestra(dadosPalestra)
 
@@ -102,7 +105,6 @@ const inserirPalestra = async function(dadosPalestra) {
 
 }
 
-
 //Função para receber os dados do APP e enviar para a Model para atualizar um item existente
 const atualizarPalestra = async function(dadosPalestra, idPalestra) {
 
@@ -114,7 +116,13 @@ const atualizarPalestra = async function(dadosPalestra, idPalestra) {
     } else if (dadosPalestra.data == undefined || dadosPalestra.data == '' || validarDataMySQL(dadosPalestra.data) == false) {
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
-        //Adiciona o ID no JSON com todos os dados
+
+        //Validação para ver se o registro passado existe no bd
+        let selectID = await palestraDAO.selectPalestraById(idPalestra)
+
+        if (selectID == false)
+            return message.ERROR_NOT_FOUND_ID
+                //Adiciona o ID no JSON com todos os dados
         dadosPalestra.id = idPalestra
             //Encaminha para o DAO os dados para serem alterados
         let status = await palestraDAO.updatePalestra(dadosPalestra)

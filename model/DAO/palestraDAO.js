@@ -62,11 +62,12 @@ const selectPalestraById = async function(id) {
 const insertPalestra = async function(dadosPalestra) {
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_palestra(objetivo, tema, data)
+    let sql = `insert into tbl_palestra(objetivo, tema, data_palestra,id_escola)
         values
         ('${dadosPalestra.objetivo}',
         '${dadosPalestra.tema}',
-        "${dadosPalestra.data}")`
+        '${dadosPalestra.data_palestra}',
+        "${dadosPalestra.id_escola}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)

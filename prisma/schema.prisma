@@ -10,10 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//Para sincronizar o prisma com o banco de dados
-//npx prisma migrate dev.
-
-//Criação de uma entidade no banco de dados
 model tbl_teste_prisma{
   id Int @id @default(autoincrement())
   nome String

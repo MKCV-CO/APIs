@@ -28,7 +28,16 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllEscola = async function() {
 
-    let sql = 'select * from tbl_escola'
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola;`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -47,7 +56,45 @@ const selectAllEscola = async function() {
 const selectEscolaById = async function(id) {
 
 
-    let sql = `select * from tbl_escola where id = ${id}`
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola
+    where 
+    tbl_escola.id = ${id};`
+
+    let rsEscola = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEscola.length > 0)
+        return rsEscola
+    else
+        return false
+}
+
+const selectEscolaByIdPalestra = async function(id) {
+
+
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola,
+    tbl_palestra
+    where 
+    tbl_palestra.id = ${id} and
+    tbl_palestra.id_escola = tbl_escola.id;`
 
     let rsEscola = await prisma.$queryRawUnsafe(sql)
 
@@ -62,12 +109,14 @@ const selectEscolaById = async function(id) {
 const insertEscola = async function(dadosEscola) {
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_escola(nome, cnpj, responsavel, id_endereco)
+    let sql = `insert into tbl_escola(nome, cnpj, responsavel,email,telefone, id_endereco)
         values
-        ('${dadosEscola.nome}',
-        '${dadosEscola.cnpj}',
-        '${dadosEscola.responsavel}',
-        "${dadosEscola.id_endereco}")`
+        ('${dadosEscola.escola.nome}',
+        '${dadosEscola.escola.cnpj}',
+        '${dadosEscola.escola.responsavel}',
+        '${dadosEscola.escola.email}',
+        '${dadosEscola.escola.telefone}',
+        "${dadosEscola.escola.id_endereco}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -80,12 +129,16 @@ const insertEscola = async function(dadosEscola) {
 
 //Modifica um registro do banco de dados
 const updateEscola = async function(dadosEscola) {
+
+    console.log(dadosEscola);
     let sql = `update tbl_escola set
-    nome='${dadosEscola.nome}',
-    cnpj='${dadosEscola.cnpj}',
-    responsavel='${dadosEscola.responsavel}',
-    id_endereco='${dadosEscola.id_endereco}'
-    where id = ${dadosEscola.id}`
+    nome='${dadosEscola.escola.nome}',
+    cnpj='${dadosEscola.escola.cnpj}',
+    responsavel='${dadosEscola.escola.responsavel}',
+    email='${dadosEscola.escola.email}',
+    telefone='${dadosEscola.escola.telefone}',
+    id_endereco='${dadosEscola.endereco.id_endereco}'
+    where id = ${dadosEscola.escola.id}`
 
 
     let result = await prisma.$queryRawUnsafe(sql)
@@ -118,6 +171,7 @@ const deleteEscola = async function(id) {
 module.exports = {
     selectAllEscola,
     selectEscolaById,
+    selectEscolaByIdPalestra,
     insertEscola,
     selectLastId,
     updateEscola,

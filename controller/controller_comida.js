@@ -1,30 +1,31 @@
 /************************************************************************************
  * Objetvo: Implementa a regra de negócio entre o app e a model
- * Autores: Cleiton / MKVC
+ * Autor: Kaue - MKVC
  * Data: 20/05/2023
  * Versão: 1.0
  ************************************************************************************/
 
-//Import do arquivo de acesso ao BD
-const biomaDAO = require('../model/DAO/biomaDAO.js')
 
-//Import do arquivo de glodal de configurações do projeto
+const comidaDAO = require('../Model/DAO/comidaDAO.js');
+
 const message = require('./modulo/config.js')
 
 //Função para retornar todos os itens da tabela recebidos da Model
-const selecionarTodosBiomas = async function() {
+const selecionarTodasComidas = async function() {
 
-    //Solicita ao DAO todos os biomas do BD
-    let dadosBiomas = await biomaDAO.selectAllBiomas()
-        //Cria um objeto do tipo json
+
+    //Solicita ao DAO todos os alunos do BD
+    let dadosComida = await comidaDAO.selectAllComidas()
+
+    //Cria um objeto do tipo json
     let dadosJson = {}
 
     //Valida se BD teve registros
-    if (dadosBiomas) {
+    if (dadosComida) {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
-        dadosJson.count = dadosBiomas.length
-        dadosJson.biomas = dadosBiomas
+        dadosJson.count = dadosComida.length
+        dadosJson.comidas = dadosComida
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND
@@ -32,24 +33,23 @@ const selecionarTodosBiomas = async function() {
 
 }
 
-//Função para buscar um item filtrado pelo ID, que será encaminhado pela Model
-const buscarIdBioma = async function(id) {
+const buscarIdComida = async function(id) {
 
     //Validação para o ID
     if (id == '' || id == undefined || isNaN(id))
         return message.ERROR_REQUIRED_ID
     else {
         //Solicita ao DAO todos os alunos do BD
-        let dadosBioma = await biomaDAO.selectBiomaById(id)
+        let dadosComida = await comidaDAO.selectByIdComida(id)
 
         //Cria um objeto do tipo json
         let dadosJson = {}
 
         //Valida se BD teve registros
-        if (dadosBioma) {
+        if (dadosComida) {
             //Adiciona o array de alunos em um JSON para retornar ao app
             dadosJson.status = 200
-            dadosJson.bioma = dadosBioma
+            dadosJson.comidas = dadosComida
             return dadosJson
         } else {
             return message.ERROR_NOT_FOUND
@@ -58,24 +58,23 @@ const buscarIdBioma = async function(id) {
 
 }
 
-//Função para receber os dados do APP e enviar para a Model para inderir um novo item
-const inserirBioma = async function(dadosBioma) {
+const inserirComida = async function(dadosComida) {
 
-
-    if (dadosBioma.nome == undefined || dadosBioma.nome == '' || dadosBioma.nome.length > 100) {
+    if (dadosComida.nome == undefined || dadosComida.nome == '' || dadosComida.nome.length > 100
+    ) {
         return message.ERROR_REQUIRED_DATA
     } else {
         //Envia os dados para a model a serem inseridos no BD
-        let status = await biomaDAO.insertBioma(dadosBioma)
+        let status = await comidaDAO.insertComida(dadosComida)
 
         if (status) {
             let dadosJson = {}
 
-            let biomaNovoId = await biomaDAO.selectLastId()
-            dadosBioma.id = biomaNovoId
+            let comidaNovoId = await comidaDAO.selectLastId()
+            dadosComida.id = comidaNovoId
 
             dadosJson.status = message.CREATED_ITEM.status
-            dadosJson.bioma = dadosBioma
+            dadosJson.comida = dadosComida
 
             return dadosJson
         } else
@@ -85,34 +84,37 @@ const inserirBioma = async function(dadosBioma) {
 
 }
 
-//Função para receber os dados do APP e enviar para a Model para atualizar um item existente
-const atualizarBiomas = async function(dadosBioma, idBioma) {
+const atualizarComida = async function(dadosComida, idComida) {
 
     //Validação de dados
-    if (dadosBioma.nome == undefined || dadosBioma.nome == '' || dadosBioma.nome.length > 100) {
+    if (dadosComida.nome == undefined || dadosComida.nome == '' || dadosComida.nome.length > 100 
+        
+    ) {
         return message.ERROR_REQUIRED_DATA
 
         //Validação para o id
-    } else if (idBioma == '' || idBioma == undefined || isNaN(idBioma)) {
+    } else if (idComida == '' || idComida == undefined || isNaN(idComida)) {
         return message.ERROR_REQUIRED_ID
 
     } else {
 
-        let selectID = await biomaDAO.selectBiomaById(idBioma)
+        let selectId = await comidaDAO.selectByIdComida(idComida)
 
-        if (selectID == false)
+        if(selectId == false){
             return message.ERROR_NOT_FOUND_ID
-                //Adiciona o ID no JSON com todos os dados
-        dadosBioma.id = idBioma
+        }
+        //Adiciona o ID no JSON com todos os dados
+        dadosComida.id = idComida
 
 
         //Encaminha para o DAO os dados para serem alterados
-        let status = await biomaDAO.updateBioma(dadosBioma)
+        let status = await comidaDAO.updateComida(dadosComida)
+
 
         if (status) {
             let dadosJson = {}
             dadosJson.status = message.UPDATED_ITEM.status
-            dadosJson.bioma = dadosBioma
+            dadosJson.aluno = dadosComida
 
             return dadosJson
 
@@ -123,15 +125,14 @@ const atualizarBiomas = async function(dadosBioma, idBioma) {
     }
 }
 
-//Função para excluir um aluno filtrado pelo ID, será encaminhado para a Model
-const deletarBiomas = async function(dadosBioma, id) {
+const deletarComidas = async function(dadosComida, id) {
 
     if (id == '' || id == undefined || isNaN(id)) {
         return message.ERROR_REQUIRED_ID
     } else {
-        console.log(id);
-        dadosBioma.id = id
-        let status = await biomaDAO.deleteBioma(id)
+        let status = await comidaDAO.deleteComida(id)
+
+        dadosComida.id = id
 
         if (status) {
             return message.DELETED_ITEM
@@ -143,10 +144,14 @@ const deletarBiomas = async function(dadosBioma, id) {
 
 }
 
+
+
+
 module.exports = {
-    selecionarTodosBiomas,
-    buscarIdBioma,
-    inserirBioma,
-    atualizarBiomas,
-    deletarBiomas
+    selecionarTodasComidas,
+    buscarIdComida,
+    inserirComida,
+    atualizarComida,
+    deletarComidas
+    
 }
