@@ -60,8 +60,708 @@
  const controllerPalestra = require('./controller/controller_palestra.js')
  const controllerEscola = require('./controller/controller_escola.js')
  const controllerEscolaPalestra = require('./controller/controller_escola-palestra.js')
+const controllerComida = require('./controller/controller_comida.js')
+const controllerEmpresa = require('./controller/controller_empresa')
+const controller_email_empresa = require('./controller/controller_email-empresa.js')
+const controller_fotos_palestra = require('./controller/controller_fotos_palestra.js')
+const controller_videosInfantil = require('./controller/controller_videosInfantil.js')
+const controller_videosPalestra = require('./controller/controller_videoPalestra.js')
  const bodyJSON = bodyParser.json()
  const message = require('./controller/modulo/config.js')
+
+
+ /*****************************
+Objetvo: TABELA COMIDAS
+Data: 20/05/2023
+Versão: 1.0
+*****************************/
+
+// ENDPOINT: SELECIONA TODAS AS COMIDAS
+app.get('/v1/cultural-path/comida', cors(), async function(request, response){
+    
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controllerComida.selecionarTodasComidas();
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+
+})
+
+//ENDPOINT: SELECIONAR A COMIDA PELO ID
+app.get('/v1/cultural-path/comida/:id', cors(), async function(request, response){
+
+    //Recebe o id enviado na requisição
+    let idComida = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controllerComida.buscarIdComida(idComida)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+})
+
+
+// ENDPOINT: Enviar dados a tabela tbl_comida.
+app.post('/v1/cultural-path/comida',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controllerComida.inserirComida(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT:Objetvo: Atualizar os dados na Tabela tbl_comida.
+app.put('/v1/cultural-path/comida/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idComida = request.params.id
+        let resultUpdatedados = await controllerComida.atualizarComida(dadosBody, idComida)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+
+// ENDPOINT: Objetvo: Deleta o registro da tabela tbl_comida peloo id.
+app.delete('/v1/cultural-path/comida/:id', cors(), bodyJSON, async function(request, response) {
+        //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idComida = request.params.id
+
+    let resultDeleteDados = await controllerComida.deletarComidas(dadosBody, idComida)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+/*****************************
+Objetvo:  Tabela EMPRESA
+Data: 21/05/2023
+Autor: Kauê - MKVC
+Versão: 1.0
+*****************************/
+
+// ENDPOINT: SELECIONA TODAS AS EMPRESAS
+app.get('/v1/cultural-path/empresa', cors(), async function(request, response) {
+
+    //Solicita a controller que retorne todos os alunos do BD
+   let dados = await controllerEmpresa.selecionarTodasEmpresas();
+
+   //Valida se existem registros para retornar na requisição
+   response.status(dados.status)
+
+   response.json(dados)
+
+})
+
+// ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO ID
+ app.get('/v1/cultural-path/empresa/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idEmpresa = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controllerEmpresa.buscarIdEmpresa(idEmpresa)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE EMPRESA
+ app.post('/v1/cultural-path/empresa',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controllerEmpresa.inserirEmpresa(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT: ATUALIZA A EMPRESA PELO ID
+app.put('/v1/cultural-path/empresa/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idEmpresa = request.params.id
+        let resultUpdatedados = await controllerEmpresa.atualizarEmpresa(dadosBody, idEmpresa)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+
+// ENDPOINT: DELETA O REGISTRO DA TABELA PELO ID
+app.delete('/v1/cultural-path/Empresa/:id', cors(), bodyJSON, async function(request, response) {
+    //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idEmpresa = request.params.id
+
+    let resultDeleteDados = await controllerEmpresa.deletarEmpresa(dadosBody, idEmpresa)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+
+/****************************
+Objetvo:  Tabela EMAIL-EMPRESA
+Data: 21/05/2023
+Autor: Kauê - MKVC
+Versão: 1.0
+*****************************/
+// ENDPOINT: SELECIONA TODOS OS EMAILS DAS EMPRESAS
+app.get('/v1/cultural-path/email-empresa', cors(), async function(request, response) {
+
+    //Solicita a controller que retorne todos os alunos do BD
+   let dados = await controller_email_empresa.selecionarTodosEmailsEmpresa();
+
+   //Valida se existem registros para retornar na requisição
+   response.status(dados.status)
+
+   response.json(dados)
+
+})
+
+// ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID
+app.get('/v1/cultural-path/email-empresa/empresa/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idEmpresa = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_email_empresa.buscarIdEmpresa(idEmpresa)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID
+app.get('/v1/cultural-path/email-empresa/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idEmail = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_email_empresa.buscarIdEmail(idEmail)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE EMAIL
+app.post('/v1/cultural-path/email-empresa',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controller_email_empresa.inserirEmail(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT: ATUALIZA A EMPRESA PELO ID
+app.put('/v1/cultural-path/email-empresa/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idEmpresa = request.params.id
+        let resultUpdatedados = await controller_email_empresa.atualizarEmailEmpresa(dadosBody, idEmpresa)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+
+// ENDPOINT: DELETA O REGISTRO DA TABELA PELO ID
+app.delete('/v1/cultural-path/email-empresa/:id', cors(), bodyJSON, async function(request, response) {
+    //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idEmail = request.params.id
+
+    let resultDeleteDados = await controller_email_empresa.deletarEmpresa(dadosBody, idEmail)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+/******************************
+Objetvo:  Tabela FOTOS-PALESTRA
+Data: 21/05/2023
+Autor: Kauê - MKVC
+Versão: 1.0
+*****************************/
+// ENDPOINT: SELECIONA TODOS AS FOTOS DAS PALESTRAS
+app.get('/v1/cultural-path/fotos-palestra', cors(), async function(request, response) {
+
+    //Solicita a controller que retorne todos os alunos do BD
+   let dados = await controller_fotos_palestra.selecionarTodasAsFotos();
+
+   //Valida se existem registros para retornar na requisição
+   response.status(dados.status)
+
+   response.json(dados)
+
+})
+
+// ENDPOINT: SELECIONA TODAS AS FOTO DAS PALESTRAS PELO ID
+app.get('/v1/cultural-path/fotos-palestra/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idFoto = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_fotos_palestra.buscarIdFotos(idFoto)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE FOTO
+app.post('/v1/cultural-path/fotos-palestra',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controller_fotos_palestra.inserirFoto(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT: ATUALIZA A FOTO PELO ID
+app.put('/v1/cultural-path/fotos-palestra/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idFoto = request.params.id
+        let resultUpdatedados = await controller_fotos_palestra.atualizarFotos(dadosBody, idFoto)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+// ENDPOINT: DELETA O REGISTRO DA FOTO PELO ID
+app.delete('/v1/cultural-path/fotos-palestra/:id', cors(), bodyJSON, async function(request, response) {
+    //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idFoto = request.params.id
+
+    let resultDeleteDados = await controller_fotos_palestra.deletarFoto(dadosBody, idFoto)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+/**************************************
+Objetvo:  Tabela VIDEOS-INFANTIL
+Data: 22/05/2023
+Autor: Kauê - MKVC
+Versão: 1.0
+*****************************/ 
+// ENDPOINT: SELECIONA TODOS OS VIDEOS INFANTIS
+app.get('/v1/cultural-path/videos-infantil', cors(), async function(request, response) {
+
+    //Solicita a controller que retorne todos os alunos do BD
+   let dados = await controller_videosInfantil.selecionarTodosOsVideosInfantil();
+
+   //Valida se existem registros para retornar na requisição
+   response.status(dados.status)
+
+   response.json(dados)
+
+})
+
+// ENDPOINT: SELECIONA TODAS OS VIDEOS INFANTIS PELO ID
+app.get('/v1/cultural-path/videos-infantil/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idVideo = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_videosInfantil.buscarIdVideo(idVideo)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE UM VIDEO INFANTIL
+app.post('/v1/cultural-path/videos-infantil',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controller_videosInfantil.inserirVideo(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT: ATUALIZA O VIDEO PELO ID
+app.put('/v1/cultural-path/videos-infantil/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idVideo = request.params.id
+        let resultUpdatedados = await controller_videosInfantil.atualizarVideos(dadosBody, idVideo)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+// ENDPOINT: DELETA O REGISTRO DO VIDEO PELO ID
+app.delete('/v1/cultural-path/videos-infantil/:id', cors(), bodyJSON, async function(request, response) {
+    //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idVideo = request.params.id
+
+    let resultDeleteDados = await controller_videosInfantil.deletarFoto(dadosBody, idVideo)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+/*****************************
+Objetvo:  Tabela VIDEOS-PALESTRA
+Data: 22/05/2023
+Autor: Kauê - MKVC
+Versão: 1.0
+*****************************/
+// ENDPOINT: SELECIONA TODOS OS VIDEOS DAS PALESTRAS
+app.get('/v1/cultural-path/videos-palestras', cors(), async function(request, response) {
+
+    //Solicita a controller que retorne todos os alunos do BD
+   let dados = await controller_videosPalestra.selecionarTodosOsVideosPalestra();
+
+   //Valida se existem registros para retornar na requisição
+   response.status(dados.status)
+
+   response.json(dados)
+
+})
+
+// ENDPOINT: SELECIONA TODAS OS VIDEOS DAS PALESTRAS PELO ID
+app.get('/v1/cultural-path/videos-palestras/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idVideo = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_videosPalestra.buscarIdVideo(idVideo)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE VIDEO
+app.post('/v1/cultural-path/videos-palestras',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controller_videosPalestra.inserirVideo(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT: ATUALIZA O VIDEO PELO ID
+app.put('/v1/cultural-path/videos-palestras/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idVideo = request.params.id
+        let resultUpdatedados = await controller_videosPalestra.atualizarVideos(dadosBody, idVideo)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+// ENDPOINT: DELETA O REGISTRO DO VIDEO PELO ID
+app.delete('/v1/cultural-path/videos-palestras/:id', cors(), bodyJSON, async function(request, response) {
+    //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idVideo = request.params.id
+
+    let resultDeleteDados = await controller_videosPalestra.deletarVideo(dadosBody, idVideo)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+
+/*********************************
+Objetvo:  Tabela ESTADO-COMIDA
+Data: 22/05/2023
+Autor: Kauê - MKVC
+Versão: 1.0
+*****************************/
+// ENDPOINT: SELECIONA TODOS OS ESTADOS DO MAPA
+app.get('/v1/cultural-path/estado-comida', cors(), async function(request, response) {
+
+    //Solicita a controller que retorne todos os alunos do BD
+   let dados = await controller_estadoMapa.selecionarTodosOsEstadosMapa();
+
+   //Valida se existem registros para retornar na requisição
+   response.status(dados.status)
+
+   response.json(dados)
+
+})
+
+// ENDPOINT: SELECIONA TODAS OS ESTADOS DO MAPA PELO ID
+app.get('/v1/cultural-path/estado-mapa/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let idEstado = request.params.id
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_estadoMapa.buscarIdEstado(idEstado)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: SELECIONA TODAS OS ESTADOS DO MAPA PELA SIGLA
+app.get('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let siglaEstado = request.params.sigla
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controller_estadoMapa.buscarSigla(siglaEstado)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
+
+// ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DO ESTADO
+app.post('/v1/cultural-path/estado-comida',bodyJSON, cors(),async function(request,response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados no body da requisição
+        let dadosBody = request.body
+
+        //Envia os dados para a controller
+        let resultInsertDados = await controller_estadoMapa.inserirEstado(dadosBody)
+
+        //Retorna o status code e a message
+        response.status(resultInsertDados.status)
+        response.json(resultInsertDados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// ENDPOINT: ATUALIZA O ESTADO PELO ID
+app.put('/v1/cultural-path/estado-comida/:id',cors(),bodyJSON, async function(request,response){
+    
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados do Body
+        let dadosBody = request.body
+
+        //Recebe o id do aluno
+        let idEstado = request.params.id
+        let resultUpdatedados = await controller_estadoMapa.atualizarEstado(dadosBody, idEstado)
+
+        response.status(resultUpdatedados.status)
+        response.json(resultUpdatedados)
+    } else {
+
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+})
+
+// ENDPOINT: DELETA O REGISTRO DO ESTADO PELO ID
+app.delete('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async function(request, response) {
+    //Recebe os dados do Body
+    let dadosBody = request.body
+
+    //Recebe o id do aluno
+    let idEstado = request.params.id
+
+    let resultDeleteDados = await controller_estadoMapa.deletarEstado(dadosBody, idEstado)
+
+    response.status(resultDeleteDados.status)
+    response.json(resultDeleteDados)
+
+})
+
+
 
  /****************************************************
   * Objetvo: Tabela Bioma

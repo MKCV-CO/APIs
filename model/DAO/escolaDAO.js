@@ -78,6 +78,33 @@ const selectEscolaById = async function(id) {
         return false
 }
 
+const selectEscolaByIdPalestra = async function(id) {
+
+
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola,
+    tbl_palestra
+    where 
+    tbl_palestra.id = ${id} and
+    tbl_palestra.id_escola = tbl_escola.id;`
+
+    let rsEscola = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEscola.length > 0)
+        return rsEscola
+    else
+        return false
+}
+
 //Insere um novo registro no Banco de Dados
 const insertEscola = async function(dadosEscola) {
 
@@ -144,6 +171,7 @@ const deleteEscola = async function(id) {
 module.exports = {
     selectAllEscola,
     selectEscolaById,
+    selectEscolaByIdPalestra,
     insertEscola,
     selectLastId,
     updateEscola,

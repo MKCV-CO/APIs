@@ -116,7 +116,7 @@ const inserirVoluntario = async function(dadosVoluntario) {
     } else {
 
 
-        controllerEndereco.inserirEndereco(dadosVoluntario)
+        await controllerEndereco.inserirEndereco(dadosVoluntario)
         let selectEndereco = await enderecoDAO.selectLastId()
 
         dadosVoluntario.voluntario.id_endereco = selectEndereco

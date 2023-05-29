@@ -98,16 +98,10 @@ const inserirEscola = async function(dadosEscola) {
         return message.ERROR_REQUIRED_DATA
 
     } else {
-        let endereco =await controllerEndereco.inserirEndereco(dadosEscola)
-        console.log(dadosEscola);
-        console.log(dadosEscola.endereco);
-        
-        console.log(endereco);
-        
+        let endereco = await controllerEndereco.inserirEndereco(dadosEscola)
 
         let selectEndereco = await enderecoDAO.selectLastId()
-
-        console.log(selectEndereco);
+        
 
         dadosEscola.escola.id_endereco = selectEndereco
         let status = await escolaDAO.insertEscola(dadosEscola)

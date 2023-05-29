@@ -72,8 +72,9 @@ const inserirEndereco = async function(dadosEndereco) {
             dadosEndereco.endereco.estado == undefined || dadosEndereco.endereco.estado == '') {
             return message.ERROR_REQUIRED_DATA
         } else {
-
+            
             let selectCidade = await enderecoDAO.selectCidadeByName(dadosEndereco.endereco.cidade)
+            
 
             if (selectCidade) {
 
@@ -94,8 +95,10 @@ const inserirEndereco = async function(dadosEndereco) {
                     return message.ERROR_INTERNAL_SERVER
             } else {
 
+                
                 let selectEstado = await estadoDAO.selectEstadoBySigla(dadosEndereco.endereco.estado)
-
+                
+                
                 if (selectEstado) {
                     let cidadeJson = {
                         "nome": `${dadosEndereco.endereco.cidade}`,
