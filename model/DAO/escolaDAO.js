@@ -77,6 +77,31 @@ const selectEscolaById = async function(id) {
     else
         return false
 }
+//Retorna um genero filtrado pelo id
+const selectEscolaByNome = async function(nome) {
+
+
+    let sql = `select
+    tbl_escola.id,
+    tbl_escola.nome,
+    tbl_escola.cnpj,
+    tbl_escola.responsavel,
+    tbl_escola.telefone,
+    tbl_escola.email,
+    tbl_escola.id_endereco
+    from
+    tbl_escola
+    where 
+    tbl_escola.nome like "%${nome}%"`
+
+    let rsEscola = await prisma.$queryRawUnsafe(sql)
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEscola.length > 0)
+        return rsEscola
+    else
+        return false
+}
 
 const selectEscolaByIdPalestra = async function(id) {
 
@@ -175,5 +200,6 @@ module.exports = {
     insertEscola,
     selectLastId,
     updateEscola,
-    deleteEscola
+    deleteEscola,
+    selectEscolaByNome
 }

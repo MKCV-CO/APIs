@@ -201,6 +201,21 @@ app.get('/v1/cultural-path/empresa', cors(), async function(request, response) {
     response.json(dados)
 
  });
+// ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO NOME
+ app.get('/v1/cultural-path/empresa-nome', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let nomeEmpresa = request.query.nome
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controllerEmpresa.buscarNomeEmpresa(nomeEmpresa)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
 
 // ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE EMPRESA
  app.post('/v1/cultural-path/empresa',bodyJSON, cors(),async function(request,response){
@@ -281,7 +296,7 @@ app.get('/v1/cultural-path/email-empresa', cors(), async function(request, respo
 
 })
 
-// ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID
+// ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID DA EMPRESA
 app.get('/v1/cultural-path/email-empresa/empresa/:id', cors(), bodyJSON, async function(request, response) {
 
     //Recebe o id enviado na requisição
@@ -297,7 +312,7 @@ app.get('/v1/cultural-path/email-empresa/empresa/:id', cors(), bodyJSON, async f
 
  });
 
-// ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID
+// ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID DO E-MAIL
 app.get('/v1/cultural-path/email-empresa/:id', cors(), bodyJSON, async function(request, response) {
 
     //Recebe o id enviado na requisição
@@ -1410,6 +1425,20 @@ app.delete('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async functi
  })
 
  //EndPoint: Retorna dados do voluntario pelo ID
+ app.get('/v1/cultural-path/escola-nome', cors(), async function(request, response) {
+
+     //Recebe o id enviado na requisição
+     let nomeEscola = request.query.nome
+
+     //Solicita a controller que retorne a cidade filtrada pelo ID do BD
+     let dados = await controllerEscola.buscarNomeEscola(nomeEscola)
+
+     //Valida se existem registros para retornar na requisição
+     response.status(dados.status)
+
+     response.json(dados)
+ })
+ //EndPoint: Retorna dados do voluntario pelo ID
  app.get('/v1/cultural-path/escola/:id', cors(), async function(request, response) {
 
      //Recebe o id enviado na requisição
@@ -1571,7 +1600,7 @@ app.delete('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async functi
      response.json(resultDeleteDados)
  })
 
- app.listen(8080, function() {
+ app.listen(8181, function() {
      console.log('Servidor aguardando requisições');
 
  })
