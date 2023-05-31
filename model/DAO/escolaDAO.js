@@ -80,7 +80,7 @@ const selectEscolaById = async function(id) {
 const selectEscolaByNome = async function(nome) {
 
 
-    
+
     let sql = `select
     tbl_escola.id,
     tbl_escola.nome,
@@ -104,6 +104,8 @@ const selectEscolaByNome = async function(nome) {
 }
 
 const selectEscolaByIdPalestra = async function(id) {
+
+    console.log(id);
 
 
     let sql = `select

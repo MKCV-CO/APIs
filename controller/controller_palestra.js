@@ -85,7 +85,7 @@ const inserirPalestra = async function(dadosPalestra) {
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
 
-        let escola = await escolaDAO.selectEscolaByIdPalestra(dadosPalestra)
+        let escola = await escolaDAO.selectEscolaByIdPalestra(dadosPalestra.id_escola)
 
         let status = await palestraDAO.insertPalestra(dadosPalestra)
 
