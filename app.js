@@ -66,9 +66,9 @@
  const controller_videosInfantil = require('./controller/controller_videosInfantil.js')
  const controller_videosPalestra = require('./controller/controller_videoPalestra.js')
  const controller_palestraVoluntario = require('./controller/controller_palestra_volutario.js')
+ const controller_palestraEmpresa = require('./controller/controller_palestra_empresa.js')
  const bodyJSON = bodyParser.json()
  const message = require('./controller/modulo/config.js')
- const controller_palestra_volutario = require('./controller/controller_palestra_volutario.js')
 
 
 
@@ -82,7 +82,7 @@
  app.get('/v1/cultural-path/palestra-voluntario', cors(), async function(request, response) {
 
      //Solicita a controller que retorne todos as cidades do BD
-     let dados = await controller_palestra_volutario.selecionarTodasPalestras()
+     let dados = await controller_palestraVoluntario.selecionarTodasPalestras()
          //Valida se existem registros para retornar na requisição
      response.status(dados.status)
 
@@ -161,6 +161,95 @@
      response.json(resultDeleteDados)
  })
 
+
+ /****************************************************
+  * Objetvo: Tabela Palestra-Empresa
+  * Data: 22/05/2023
+  * Versão: 1.0
+  ***************************************************/
+
+ //EndPoint: Retorna todos os dados do voluntario
+ app.get('/v1/cultural-path/palestra-empresa', cors(), async function(request, response) {
+
+     //Solicita a controller que retorne todos as cidades do BD
+     let dados = await controller_palestraEmpresa.selecionarTodasPalestras()
+         //Valida se existem registros para retornar na requisição
+     response.status(dados.status)
+
+     response.json(dados)
+ })
+
+ //EndPoint: Retorna dados do voluntario pelo ID
+ app.get('/v1/cultural-path/palestra-empresa/:id', cors(), async function(request, response) {
+
+     //Recebe o id enviado na requisição
+     let idPalestra = request.params.id
+
+     //Solicita a controller que retorne a cidade filtrada pelo ID do BD
+     let dados = await controller_palestraEmpresa.buscarIdPalestra(idPalestra)
+
+     //Valida se existem registros para retornar na requisição
+     response.status(dados.status)
+
+     response.json(dados)
+ })
+
+ //EndPoint: Inseri um novo voluntario
+ app.post('/v1/cultural-path/palestra-empresa', cors(), bodyJSON, async function(request, response) {
+
+     let contentType = request.headers['content-type']
+
+     if (String(contentType).toLowerCase() == 'application/json') {
+         //Recebe os dados encaminhados no body da requisição
+         let dadosBody = request.body
+
+         //Envia os dados para a controller
+         let resultInsertDados = await controller_palestraEmpresa.inserirPalestra(dadosBody)
+
+         //Retorna o status code e a message
+         response.status(resultInsertDados.status)
+         response.json(resultInsertDados)
+     } else {
+
+         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+         response.json(message.ERROR_INVALID_CONTENT_TYPE)
+     }
+ })
+
+ //EndPoint: Atualiza um voluntario pelo id
+ app.put('/v1/cultural-path/palestra-empresa/:id', cors(), bodyJSON, async function(request, response) {
+     let contentType = request.headers['content-type']
+
+     if (String(contentType).toLowerCase() == 'application/json') {
+         //Recebe os dados do Body
+         let dadosBody = request.body
+
+
+         let idPalestra = request.params.id
+         let resultUpdatedados = await controller_palestraEmpresa.atualizarPalestra(dadosBody, idPalestra)
+
+         response.status(resultUpdatedados.status)
+         response.json(resultUpdatedados)
+     } else {
+         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+         response.json(message.ERROR_INVALID_CONTENT_TYPE)
+     }
+
+ })
+
+ //EndPoint: Deleta um voluntario pelo id
+ app.delete('/v1/cultural-path/palestra-empresa/:id', cors(), bodyJSON, async function(request, response) {
+
+     //Recebe os dados do Body
+     let dadosBody = request.body
+
+     let idPalestra = request.params.id
+
+     let resultDeleteDados = await controller_palestraEmpresa.deletarPalestra(dadosBody, idPalestra)
+
+     response.status(resultDeleteDados.status)
+     response.json(resultDeleteDados)
+ })
 
 
 
@@ -1601,96 +1690,6 @@ Versão: 1.0
      let idEscola = request.params.id
 
      let resultDeleteDados = await controllerEscola.deletarEscola(dadosBody, idEscola)
-
-     response.status(resultDeleteDados.status)
-     response.json(resultDeleteDados)
- })
-
-
- /****************************************************
-  * Objetvo: Tabela Escola-Palestra
-  * Data: 22/05/2023
-  * Versão: 1.0
-  ***************************************************/
-
- //EndPoint: Retorna todos os dados do voluntario
- app.get('/v1/cultural-path/escola-palestra', cors(), async function(request, response) {
-
-     //Solicita a controller que retorne todos as cidades do BD
-     let dados = await controllerEscolaPalestra.selecionarTodasEscolaPalestra()
-         //Valida se existem registros para retornar na requisição
-     response.status(dados.status)
-
-     response.json(dados)
- })
-
- //EndPoint: Retorna dados do voluntario pelo ID
- app.get('/v1/cultural-path/escola-palestra/:id', cors(), async function(request, response) {
-
-     //Recebe o id enviado na requisição
-     let idEscolaPalestra = request.params.id
-
-     //Solicita a controller que retorne a cidade filtrada pelo ID do BD
-     let dados = await controllerEscolaPalestra.buscarIdEscolaPalestra(idEscolaPalestra)
-
-     //Valida se existem registros para retornar na requisição
-     response.status(dados.status)
-
-     response.json(dados)
- })
-
- //EndPoint: Inseri um novo voluntario
- app.post('/v1/cultural-path/escola-palestra', cors(), bodyJSON, async function(request, response) {
-
-     let contentType = request.headers['content-type']
-
-     if (String(contentType).toLowerCase() == 'application/json') {
-         //Recebe os dados encaminhados no body da requisição
-         let dadosBody = request.body
-
-         //Envia os dados para a controller
-         let resultInsertDados = await controllerEscolaPalestra.inserirEscolaPalestra(dadosBody)
-
-         //Retorna o status code e a message
-         response.status(resultInsertDados.status)
-         response.json(resultInsertDados)
-     } else {
-
-         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
-         response.json(message.ERROR_INVALID_CONTENT_TYPE)
-     }
- })
-
- //EndPoint: Atualiza uma escola pelo id
- app.put('/v1/cultural-path/escola-palestra/:id', cors(), bodyJSON, async function(request, response) {
-     let contentType = request.headers['content-type']
-
-     if (String(contentType).toLowerCase() == 'application/json') {
-         //Recebe os dados do Body
-         let dadosBody = request.body
-
-
-         let idEscolaPalestra = request.params.id
-         let resultUpdatedados = await controllerEscolaPalestra.atualizarEscolaPalestra(dadosBody, idEscolaPalestra)
-
-         response.status(resultUpdatedados.status)
-         response.json(resultUpdatedados)
-     } else {
-         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
-         response.json(message.ERROR_INVALID_CONTENT_TYPE)
-     }
-
- })
-
- //EndPoint: Deleta um voluntario pelo id
- app.delete('/v1/cultural-path/escola-palestra/:id', cors(), bodyJSON, async function(request, response) {
-
-     //Recebe os dados do Body
-     let dadosBody = request.body
-
-     let idEscolaPalestra = request.params.id
-
-     let resultDeleteDados = await controllerEscolaPalestra.deletarEscolaPalestra(dadosBody, idEscolaPalestra)
 
      response.status(resultDeleteDados.status)
      response.json(resultDeleteDados)

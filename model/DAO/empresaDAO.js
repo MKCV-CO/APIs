@@ -6,17 +6,22 @@ const prisma = new PrismaClient()
 
 
 //Função para retornar um registro filtrado pelo id do Banco de Dados
-const selectAllEmpresas = async function(){
-  
-    let sql = 'select * from tbl_empresa'
+const selectAllEmpresas = async function() {
+
+    let sql = `select tbl_empresa.id, tbl_empresa.cnpj, tbl_empresa.razao_social,tbl_empresa.email,tbl_empresa.telefone,tbl_mensagem.mensagem, tbl_tipo_contato.nome as contato
+    from tbl_empresa
+		inner join tbl_mensagem
+			on tbl_mensagem.id = tbl_empresa.id_mensagem
+		inner join tbl_tipo_contato
+			on tbl_tipo_contato.id = tbl_empresa.id_tipo_contato;`
 
     let rsEmpresa = await prisma.$queryRawUnsafe(sql)
 
-    
 
-    if(rsEmpresa.length > 0){
+
+    if (rsEmpresa.length > 0) {
         return rsEmpresa
-    }else{
+    } else {
         return false
     }
 
@@ -26,7 +31,13 @@ const selectAllEmpresas = async function(){
 const selectByIdEmpresa = async function(id) {
 
 
-    let sql = `select * from tbl_empresa where id = ${id}`
+    let sql = `select tbl_empresa.id, tbl_empresa.cnpj, tbl_empresa.razao_social,tbl_empresa.email,tbl_empresa.telefone,tbl_mensagem.mensagem, tbl_tipo_contato.nome as contato
+    from tbl_empresa
+		inner join tbl_mensagem
+			on tbl_mensagem.id = tbl_empresa.id_mensagem
+		inner join tbl_tipo_contato
+            on tbl_tipo_contato.id = tbl_empresa.id_tipo_contato
+        where tbl_empresa.id = ${id};`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -71,7 +82,7 @@ const insertEmpresa = async function(dadosEmpresa) {
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
-    
+
     if (result)
         return true
     else
@@ -93,7 +104,7 @@ const selectLastId = async function() {
 
 const updateEmpresa = async function(dadosEmpresa) {
 
-    
+
     let sql = `update tbl_empresa set 
     nome_fantasia= lower('${dadosEmpresa.nome_fantasia}'), 
     cnpj=lower('${dadosEmpresa.cnpj}'),

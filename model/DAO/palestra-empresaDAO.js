@@ -26,9 +26,9 @@ const selectLastId = async function() {
 }
 
 //Retorna todos os registros do Banco de Dados
-const selectAllPalestra_Voluntario = async function() {
+const selectAllPalestra_Empresa = async function() {
 
-    let sql = 'select * from tbl_palestra_voluntario'
+    let sql = 'select * from tbl_palestra_empresa'
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -44,10 +44,10 @@ const selectAllPalestra_Voluntario = async function() {
 }
 
 //Retorna um genero filtrado pelo id
-const selectPalestra_VoluntarioById = async function(id) {
+const selectPalestra_EmpresaById = async function(id) {
 
 
-    let sql = `select * from tbl_palestra_voluntario where id = ${id}`
+    let sql = `select * from tbl_palestra_empresa where id = ${id}`
 
     let rsPalestra = await prisma.$queryRawUnsafe(sql)
 
@@ -59,13 +59,13 @@ const selectPalestra_VoluntarioById = async function(id) {
 }
 
 //Insere um novo registro no Banco de Dados
-const insertPalestra_Voluntario = async function(dadosPalestra) {
+const insertPalestra_Empresa = async function(dadosPalestra) {
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_palestra_voluntario(id_palestra,id_voluntario)
+    let sql = `insert into tbl_palestra_empresa(id_palestra,id_empresa)
         values
         ('${dadosPalestra.id_palestra}',
-        "${dadosPalestra.id_voluntario}")`
+        "${dadosPalestra.id_empresa}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -77,14 +77,11 @@ const insertPalestra_Voluntario = async function(dadosPalestra) {
 }
 
 //Modifica um registro do banco de dados
-const updatePalestra_Voluntario = async function(dadosPalestra) {
-    let sql = `update tbl_palestra_voluntario set
+const updatePalestra_Empresa = async function(dadosPalestra) {
+    let sql = `update tbl_palestra_empresa set
     id_palestra='${dadosPalestra.id_palestra}',
-    id_voluntario='${dadosPalestra.id_voluntario}'
+    id_empresa='${dadosPalestra.id_empresa}'
     where id = ${dadosPalestra.id}`
-
-
-    console.log(dadosPalestra);
 
     let result = await prisma.$queryRawUnsafe(sql)
 
@@ -98,9 +95,9 @@ const updatePalestra_Voluntario = async function(dadosPalestra) {
 }
 
 //Deleta um registro do Banco de Dados
-const deletePalestra_Voluntario = async function(id) {
+const deletePalestra_Empresa = async function(id) {
 
-    let sql = `delete from tbl_palestra_voluntario where id=${id}`
+    let sql = `delete from tbl_palestra_empresa where id=${id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 
@@ -114,10 +111,10 @@ const deletePalestra_Voluntario = async function(id) {
 }
 
 module.exports = {
-    selectAllPalestra_Voluntario,
-    selectPalestra_VoluntarioById,
-    insertPalestra_Voluntario,
+    selectAllPalestra_Empresa,
+    selectPalestra_EmpresaById,
+    insertPalestra_Empresa,
     selectLastId,
-    updatePalestra_Voluntario,
-    deletePalestra_Voluntario
+    updatePalestra_Empresa,
+    deletePalestra_Empresa
 }

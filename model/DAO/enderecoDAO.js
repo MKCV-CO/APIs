@@ -77,14 +77,14 @@ const selectEnderecoById = async function(id) {
     tbl_estado.nome as estado,
     tbl_estado.sigla as sigla_estado,
     tbl_estado.regiao
-    from 
-    tbl_endereco,
-    tbl_cidade,
-    tbl_estado
+    from  tbl_endereco
+		inner join tbl_cidade
+			on tbl_cidade.id = tbl_endereco.id_cidade
+		inner join tbl_estado
+			on tbl_estado.id = tbl_cidade.id_estado
     where 
-    tbl_endereco.id = ${id} and
-    tbl_cidade.id = tbl_endereco.id_cidade and
-    tbl_estado.id = tbl_cidade.id_estado;`
+    tbl_endereco.id = ${id}
+    ;`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
 
@@ -109,16 +109,16 @@ const selectEnderecoByIdVoluntario = async function(id) {
     tbl_estado.nome as estado,
     tbl_estado.sigla as sigla_estado,
     tbl_estado.regiao
-    from 
-    tbl_voluntario, 
-    tbl_endereco,
-    tbl_cidade,
-    tbl_estado
+    from tbl_voluntario 
+		inner join tbl_endereco
+			on tbl_voluntario.id_endereco = tbl_endereco.id
+		inner join tbl_cidade
+			on tbl_cidade.id = tbl_endereco.id_cidade
+		inner join tbl_estado
+			on tbl_estado.id = tbl_cidade.id_estado
     where 
     tbl_voluntario.id = ${id} and
-    tbl_voluntario.id_endereco = tbl_endereco.id and
-     tbl_cidade.id = tbl_endereco.id_cidade and
-     tbl_estado.id = tbl_cidade.id_estado;`
+    tbl_voluntario.id_endereco = tbl_endereco.id ;`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
 
@@ -143,16 +143,16 @@ const selectEnderecoByIdEscola = async function(id) {
     tbl_estado.nome as estado,
     tbl_estado.sigla as sigla_estado,
     tbl_estado.regiao
-    from 
-    tbl_escola, 
-    tbl_endereco,
-    tbl_cidade,
-    tbl_estado
+    from tbl_escola 
+		inner join tbl_endereco
+			on tbl_escola.id_endereco = tbl_endereco.id
+		inner join tbl_cidade
+			on tbl_cidade.id = tbl_endereco.id_cidade
+		inner join tbl_estado
+			on tbl_estado.id = tbl_cidade.id_estado
     where 
     tbl_escola.id = ${id} and
-    tbl_escola.id_endereco = tbl_endereco.id and
-     tbl_cidade.id = tbl_endereco.id_cidade and
-     tbl_estado.id = tbl_cidade.id_estado;`
+    tbl_escola.id_endereco = tbl_endereco.id ;`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
 
