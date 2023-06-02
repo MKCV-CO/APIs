@@ -133,12 +133,11 @@ const atualizarEndereco = async function(dadosEndereco, idEndereco) {
     if (dadosEndereco.endereco.logradouro == undefined || dadosEndereco.endereco.logradouro == '' || dadosEndereco.endereco.logradouro.length > 100 ||
         dadosEndereco.endereco.cep == undefined || dadosEndereco.endereco.cep == '' || dadosEndereco.endereco.cep.length > 10 ||
         dadosEndereco.endereco.numero == undefined || dadosEndereco.endereco.numero == '' || dadosEndereco.endereco.numero.length > 10 ||
-        dadosEndereco.endereco.complemento == undefined || dadosEndereco.endereco.complemento == '' || dadosEndereco.endereco.complemento.length > 15 ||
         dadosEndereco.endereco.bairro == undefined || dadosEndereco.endereco.bairro == '' || dadosEndereco.endereco.bairro.length > 50 ||
         dadosEndereco.endereco.cidade == undefined || dadosEndereco.endereco.cidade == '' ||
         dadosEndereco.endereco.estado == undefined || dadosEndereco.endereco.estado == '') {
 
-            return message.ERROR_REQUIRED_DATA
+        return message.ERROR_REQUIRED_DATA
     }
     //Validação para o id
     else if (idEndereco == '' || idEndereco == undefined || isNaN(idEndereco)) {
@@ -153,7 +152,7 @@ const atualizarEndereco = async function(dadosEndereco, idEndereco) {
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
 
-        
+
         let selectCidade = await enderecoDAO.selectCidadeByName(dadosEndereco.endereco.cidade)
 
         if (selectCidade) {
@@ -162,20 +161,18 @@ const atualizarEndereco = async function(dadosEndereco, idEndereco) {
 
             //Adiciona o ID no JSON com todos os dados
             dadosEndereco.id = idEndereco
-            //Encaminha para o DAO os dados para serem alterados
+                //Encaminha para o DAO os dados para serem alterados
             let status = await enderecoDAO.updateEndereco(dadosEndereco)
 
             if (status) {
                 let dadosJson = {}
                 dadosJson.status = message.UPDATED_ITEM.status
                 dadosJson.dadosEndereco = dadosEndereco
-                    return dadosJson
-            } 
-            else {
+                return dadosJson
+            } else {
                 return message.ERROR_INTERNAL_SERVER
             }
-        }
-        else{
+        } else {
 
             let selectEstado = await estadoDAO.selectEstadoBySigla(dadosEndereco.endereco.estado)
 
@@ -185,20 +182,20 @@ const atualizarEndereco = async function(dadosEndereco, idEndereco) {
                     "id_estado": `${selectEstado[0].id}`
                 }
                 let cidadeInexistente = await cidadeDAO.insertCidade(cidadeJson)
-            
+
 
                 if (cidadeInexistente) {
                     let dadosJsonCidade = {}
 
                     let cidadeNovoId = await cidadeDAO.selectLastId()
                     dadosJsonCidade.id = cidadeNovoId
-                
+
                     dadosJsonCidade.status = message.CREATED_ITEM.status
-                    
-                                      
+
+
                     dadosEndereco.endereco.cidade = dadosJsonCidade.id
                     dadosEndereco.id = idEndereco
-                    
+
                     let status = await enderecoDAO.updateEndereco(dadosEndereco)
 
 
@@ -206,19 +203,18 @@ const atualizarEndereco = async function(dadosEndereco, idEndereco) {
                         let dadosJson = {}
                         dadosJson.status = message.UPDATED_ITEM.status
                         dadosJson.dadosEndereco = dadosEndereco
-                            return dadosJson
-                            
-                    } 
-                    else {
+                        return dadosJson
+
+                    } else {
                         return message.ERROR_INTERNAL_SERVER
                     }
-                    
+
                 } else
                     return message.ERROR_INTERNAL_SERVER
             } else {
                 message.ERROR_STATE
             }
-        } 
+        }
 
     }
 }

@@ -1,7 +1,7 @@
 /************************************************************************************
- * Objetvo: Realizar a interação da escola-palestra com o banco de dados
+ * Objetvo: Realizar a interação da palestra com o banco de dados
  * Autores: Cleiton
- * Data: 21/05/2023
+ * Data: 31/05/2023
  * Versão: 1.0
  ************************************************************************************/
 
@@ -15,58 +15,57 @@ const prisma = new PrismaClient()
 const selectLastId = async function() {
 
     //Script para retornar apenas o ultimo registro inserido na tabela
-    let sql = `select id from tbl_escola_palestra order by id desc limit 1;`
+    let sql = `select id from tbl_palestra_voluntario order by id desc limit 1;`
 
-    let rsEscolaPalestra = await prisma.$queryRawUnsafe(sql)
+    let rsPalestra = await prisma.$queryRawUnsafe(sql)
 
-    if (rsEscolaPalestra.length > 0)
-        return rsEscolaPalestra[0].id
+    if (rsPalestra.length > 0)
+        return rsPalestra[0].id
     else
         return false
 }
 
 //Retorna todos os registros do Banco de Dados
-const selectAllEscolaPalestra = async function() {
+const selectAllPalestra_Voluntario = async function() {
 
-    let sql = 'select * from tbl_escola_palestra'
+    let sql = 'select * from tbl_palestra_voluntario'
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
     //$queryRaw é utilizado quando passar o script direto no métodos
-    //Ex: $queryRaw('select * from tbl_escola_palestra')
-    let rsEscolaPalestra = await prisma.$queryRawUnsafe(sql)
+    //Ex: $queryRaw('select * from tbl_palestra')
+    let rsPalestra = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retonou algum registro
-    if (rsEscolaPalestra.length > 0)
-        return rsEscolaPalestra
+    if (rsPalestra.length > 0)
+        return rsPalestra
     else
         return false
 }
 
-//Retorna um escola-palestra filtrado pelo id
-const selectEscolaPalestraById = async function(id) {
+//Retorna um genero filtrado pelo id
+const selectPalestra_VoluntarioById = async function(id) {
 
 
-    let sql = `select * from tbl_escola_palestra where id = ${id}`
+    let sql = `select * from tbl_palestra_voluntario where id = ${id}`
 
-    let rsEscolaPalestra = await prisma.$queryRawUnsafe(sql)
+    let rsPalestra = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retonou algum registro
-    if (rsEscolaPalestra.length > 0)
-        return rsEscolaPalestra
+    if (rsPalestra.length > 0)
+        return rsPalestra
     else
         return false
 }
 
 //Insere um novo registro no Banco de Dados
-const insertEscolaPalestra = async function(dadosEscolaPalestra) {
+const insertPalestra_Voluntario = async function(dadosPalestra) {
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_escola_palestra(id_escola, id_palestra)
+    let sql = `insert into tbl_palestra_voluntario(id_palestra,id_voluntario)
         values
-        ('${dadosEscolaPalestra.id_escola}',
-        ${dadosEscolaPalestra.id_palestra}
-        )`
+        ('${dadosPalestra.id_palestra}',
+        "${dadosPalestra.id_voluntario}")`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -78,11 +77,11 @@ const insertEscolaPalestra = async function(dadosEscolaPalestra) {
 }
 
 //Modifica um registro do banco de dados
-const updateEscolaPalestra = async function(dadosEscolaPalestra) {
-    let sql = `update tbl_escola_palestra set
-    id_escola='${dadosEscolaPalestra.id_escola}',
-    id_palestra='${dadosEscolaPalestra.id_palestra}'
-    where id = ${dadosEscolaPalestra.id}`
+const updatePalestra_Voluntario = async function(dadosPalestra) {
+    let sql = `update tbl_palestra set
+    id_palestra='${dadosPalestra.id_palestra}',
+    id_voluntario='${dadosPalestra.Id_voluntario}'
+    where id = ${dadosPalestra.id}`
 
 
     let result = await prisma.$queryRawUnsafe(sql)
@@ -97,9 +96,9 @@ const updateEscolaPalestra = async function(dadosEscolaPalestra) {
 }
 
 //Deleta um registro do Banco de Dados
-const deleteEscolaPalestra = async function(id) {
+const deletePalestra_Voluntario = async function(id) {
 
-    let sql = `delete from tbl_escola_palestra where id=${id}`
+    let sql = `delete from tbl_palestra_voluntario where id=${id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 
@@ -113,10 +112,10 @@ const deleteEscolaPalestra = async function(id) {
 }
 
 module.exports = {
-    selectAllEscolaPalestra,
-    selectEscolaPalestraById,
-    insertEscolaPalestra,
+    selectAllPalestra_Voluntario,
+    selectPalestra_VoluntarioById,
+    insertPalestra_Voluntario,
     selectLastId,
-    updateEscolaPalestra,
-    deleteEscolaPalestra
+    updatePalestra_Voluntario,
+    deletePalestra_Voluntario
 }

@@ -78,8 +78,8 @@ const buscarIdEscola = async function(id) {
 }
 const buscarNomeEscola = async function(nome) {
 
-    
-    
+
+
     //Validação para o ID
     if (nome == '' || nome == undefined)
         return message.ERROR_REQUIRED_ID
@@ -122,8 +122,8 @@ const inserirEscola = async function(dadosEscola) {
         dadosEscola.endereco.numero == undefined || dadosEscola.endereco.numero == '' || dadosEscola.endereco.numero.length > 10 ||
         dadosEscola.endereco.complemento == undefined || dadosEscola.endereco.complemento == '' || dadosEscola.endereco.complemento.length > 15 ||
         dadosEscola.endereco.bairro == undefined || dadosEscola.endereco.bairro == '' || dadosEscola.endereco.bairro.length > 50 ||
-        dadosEscola.endereco.cidade == undefined || dadosEscola.endereco.cidade == '' || 
-        dadosEscola.endereco.estado == undefined || dadosEscola.endereco.estado == '' || 
+        dadosEscola.endereco.cidade == undefined || dadosEscola.endereco.cidade == '' ||
+        dadosEscola.endereco.estado == undefined || dadosEscola.endereco.estado == '' ||
         dadosEscola.escola.responsavel == undefined || dadosEscola.escola.responsavel == '' || dadosEscola.escola.responsavel.length > 100) {
 
         return message.ERROR_REQUIRED_DATA
@@ -131,24 +131,28 @@ const inserirEscola = async function(dadosEscola) {
     } else {
         let endereco = await controllerEndereco.inserirEndereco(dadosEscola)
 
-        let selectEndereco = await enderecoDAO.selectLastId()
-        
+        if (endereco) {
+            let selectEndereco = await enderecoDAO.selectLastId()
 
-        dadosEscola.escola.id_endereco = selectEndereco
-        let status = await escolaDAO.insertEscola(dadosEscola)
+            dadosEscola.escola.id_endereco = selectEndereco
+            let status = await escolaDAO.insertEscola(dadosEscola)
 
-        if (status) {
-            let dadosJson = {}
+            if (status) {
+                let dadosJson = {}
 
-            let escolaNovoID = await escolaDAO.selectLastId()
-            dadosEscola.id = escolaNovoID
+                let escolaNovoID = await escolaDAO.selectLastId()
+                dadosEscola.id = escolaNovoID
 
-            dadosJson.status = message.CREATED_ITEM.status
-            dadosJson.escola = dadosEscola
+                dadosJson.status = message.CREATED_ITEM.status
+                dadosJson.escola = dadosEscola
 
-            return dadosJson
+                return dadosJson
+            } else
+                return message.ERROR_INTERNAL_SERVER
         } else
-            return message.ERROR_INTERNAL_SERVER
+            return message.ERROR_REQUIRED_DATA
+
+
     }
 
 }
@@ -177,8 +181,10 @@ const atualizarEscola = async function(dadosEscola, idEscola) {
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
 
-        controllerEndereco.atualizarEndereco(dadosEscola, dadosEscola.endereco.id_endereco)
-
+        console.log(dadosEscola);
+        console.log(dadosEscola.endereco.id_endereco);
+        let endereco = await controllerEndereco.atualizarEndereco(dadosEscola, dadosEscola.endereco.id_endereco)
+        console.log(endereco);
         //Adiciona o ID no JSON com todos os dados
         dadosEscola.escola.id = idEscola
             //Encaminha para o DAO os dados para serem alterados

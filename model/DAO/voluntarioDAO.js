@@ -104,9 +104,9 @@ const insertVoluntario = async function(dadosVoluntario) {
         "${dadosVoluntario.voluntario.email}",
         "${dadosVoluntario.voluntario.telefone}",
         "${dadosVoluntario.voluntario.data_nascimento}",
-        "${dadosVoluntario.voluntario.contribuicao}",
         "${dadosVoluntario.voluntario.foto_rg}",
         "${dadosVoluntario.voluntario.foto_diploma}",
+        "${dadosVoluntario.voluntario.contribuicao}",
         ${dadosVoluntario.voluntario.id_genero},
         ${dadosVoluntario.voluntario.id_estado_civil},
         ${dadosVoluntario.voluntario.id_endereco}
@@ -132,7 +132,7 @@ const updateVoluntario = async function(dadosVoluntario) {
     data_nascimento="${dadosVoluntario.voluntario.data_nascimento}",
     foto_rg="${dadosVoluntario.voluntario.foto_rg}",
     foto_diploma="${dadosVoluntario.voluntario.foto_diploma}",
-    foto_diploma="${dadosVoluntario.voluntario.contribuicao}",
+    foto_contribuicao="${dadosVoluntario.voluntario.contribuicao}",
     id_genero=${dadosVoluntario.voluntario.id_genero},
     id_estado_civil=${dadosVoluntario.voluntario.id_estado_civil},
     id_endereco=${dadosVoluntario.endereco.id_endereco}

@@ -1,34 +1,26 @@
 /************************************************************************************
  * Objetvo: Implementa a regra de negócio entre o app e a model
  * Autores: Cleiton / MKVC
- * Data: 21/05/2023
+ * Data: 02/06/2023
  * Versão: 1.0
  ************************************************************************************/
 
 //Import do arquivo de acesso ao BD
 
-//Função para validar a data
-function validarDataMySQL(data) {
-    // Expressão regular para verificar o formato da data (AAAA-MM-DD)
-    var regex = /^\d{4}-\d{2}-\d{2}$/;
 
-    // Verifica o formato da data
-    if (!regex.test(data)) {
-        return false;
-    }
-}
 
 //Import do arquivo de glodal de configurações do projeto
 const message = require('./modulo/config.js');
-const escolaDAO = require('../model/DAO/escolaDAO.js');
+const palestraVoluntarioDAO = require('../model/DAO/palestra-voluntarioDAO.js')
 const palestraDAO = require('../model/DAO/palestraDAO.js')
+const voluntarioDAO = require('../model/DAO/voluntarioDAO.js')
 
 
 //Função para retornar todos os itens da tabela recebidos da Model
 const selecionarTodasPalestras = async function() {
 
     //Solicita ao DAO todas as cidades do BD
-    let dadosPalestra = await palestraDAO.selectAllPalestra()
+    let dadosPalestra = await palestraVoluntarioDAO.selectAllPalestra_Voluntario()
         //Cria um objeto do tipo json
     let dadosJson = {}
 
@@ -53,7 +45,7 @@ const buscarIdPalestra = async function(id) {
         return message.ERROR_REQUIRED_ID
     else {
         //Solicita ao DAO todos os alunos do BD
-        let dadosPalestra = await palestraDAO.selectPalestraById(id)
+        let dadosPalestra = await palestraVoluntarioDAO.selectPalestra_VoluntarioById(id)
 
         //Cria um objeto do tipo json
         let dadosJson = {}
@@ -76,24 +68,31 @@ const inserirPalestra = async function(dadosPalestra) {
 
 
     //Validação dos dados
-    if (dadosPalestra.objetivo == undefined || dadosPalestra.objetivo == '' ||
-        dadosPalestra.tema == undefined || dadosPalestra.tema == '' || dadosPalestra.tema.length > 100) {
+    if (dadosPalestra.id_palestra == undefined || dadosPalestra.id_palestra == '' || isNaN(dadosPalestra.id_palestra) ||
+        dadosPalestra.id_voluntario == undefined || dadosPalestra.id_voluntario == '' || isNaN(dadosPalestra.id_voluntario)) {
 
         return message.ERROR_REQUIRED_DATA
 
-        //Validação da data
-    } else if (dadosPalestra.data_palestra == undefined || dadosPalestra.data_palestra == '' || validarDataMySQL(dadosPalestra.data_palestra) == false) {
-        return message.ERROR_INVALID_DATE_FORMAT
     } else {
 
-        let escola = await escolaDAO.selectEscolaByIdPalestra(dadosPalestra.id_escola)
+        let voluntario = await voluntarioDAO.selectVoluntarioById(dadosPalestra.id_voluntario)
+        let palestra = await palestraDAO.selectPalestraById(dadosPalestra.id_palestra)
+        console.log(voluntario);
 
-        let status = await palestraDAO.insertPalestra(dadosPalestra)
+        if (voluntario == false || palestra == false)
+            return message.ERROR_NOT_FOUND_FK
+
+        console.log(dadosPalestra);
+
+        let status = await palestraVoluntarioDAO.insertPalestra_Voluntario(dadosPalestra)
+
+        console.log(status);
+
 
         if (status) {
             let dadosJson = {}
 
-            let palestraNovoId = await palestraDAO.selectLastId()
+            let palestraNovoId = await palestraVoluntarioDAO.selectLastId()
             dadosPalestra.id = palestraNovoId
 
             dadosJson.status = message.CREATED_ITEM.status
@@ -113,20 +112,18 @@ const atualizarPalestra = async function(dadosPalestra, idPalestra) {
     if (dadosPalestra.objetivo == undefined || dadosPalestra.objetivo == '' ||
         dadosPalestra.tema == undefined || dadosPalestra.tema == '' || dadosPalestra.tema.length > 100) {
         return message.ERROR_REQUIRED_DATA
-            //Validação da data
-    } else if (dadosPalestra.data == undefined || dadosPalestra.data == '' || validarDataMySQL(dadosPalestra.data) == false) {
-        return message.ERROR_INVALID_DATE_FORMAT
+
     } else {
 
         //Validação para ver se o registro passado existe no bd
-        let selectID = await palestraDAO.selectPalestraById(idPalestra)
+        let selectID = await palestraVoluntarioDAO.selectPalestraById(idPalestra)
 
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
                 //Adiciona o ID no JSON com todos os dados
         dadosPalestra.id = idPalestra
             //Encaminha para o DAO os dados para serem alterados
-        let status = await palestraDAO.updatePalestra(dadosPalestra)
+        let status = await palestraVoluntarioDAO.updatePalestra(dadosPalestra)
 
         if (status) {
             let dadosJson = {}
@@ -151,7 +148,7 @@ const deletarPalestra = async function(dadosPalestra, id) {
         return message.ERROR_REQUIRED_ID
     } else {
         dadosPalestra.id = id
-        let status = await palestraDAO.deletePalestra(id)
+        let status = await palestraVoluntarioDAO.deletePalestra(id)
 
         if (status) {
             return message.DELETED_ITEM
