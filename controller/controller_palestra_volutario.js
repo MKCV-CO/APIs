@@ -150,7 +150,7 @@ const deletarPalestra = async function(dadosPalestra, id) {
         return message.ERROR_REQUIRED_ID
     } else {
         dadosPalestra.id = id
-        let status = await palestraVoluntarioDAO.deletePalestra(id)
+        let status = await palestraVoluntarioDAO.deletePalestra_Voluntario(id)
 
         if (status) {
             return message.DELETED_ITEM
