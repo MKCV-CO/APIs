@@ -17,7 +17,7 @@ const selecionarTodasEmpresas = async function() {
     //Solicita ao DAO todos as empresas do BD
     let dadosEmpresa = await empresaDAO.selectAllEmpresas()
 
-    
+
     //Cria um objeto do tipo json
     let dadosJson = {}
 
@@ -61,7 +61,7 @@ const buscarIdEmpresa = async function(id) {
 const buscarNome = async function(nome) {
 
     //Validação para o ID
-    if (nome == '' || nome == undefined )
+    if (nome == '' || nome == undefined)
         return message.ERROR_REQUIRED_ID
     else {
         //Solicita ao DAO todos os alunos do BD
@@ -85,10 +85,10 @@ const buscarNome = async function(nome) {
 
 const inserirEmpresa = async function(dadosEmpresa) {
 
-    if (dadosEmpresa.nome_fantasia == undefined || dadosEmpresa.nome_fantasia == '' || dadosEmpresa.nome_fantasia.length > 150 ||
-        dadosEmpresa.cnpj == undefined || dadosEmpresa.cnpj == ''|| dadosEmpresa.cnpj.length > 45 ||
+    if (dadosEmpresa.telefone == undefined || dadosEmpresa.telefone == '' || dadosEmpresa.telefone.length > 50 ||
+        dadosEmpresa.cnpj == undefined || dadosEmpresa.cnpj == '' || dadosEmpresa.cnpj.length > 45 ||
         dadosEmpresa.razao_social == undefined || dadosEmpresa.razao_social == '' || dadosEmpresa.razao_social.length > 150 ||
-        dadosEmpresa.logo == undefined || dadosEmpresa.logo == '' || dadosEmpresa.logo.length > 300
+        dadosEmpresa.email == undefined || dadosEmpresa.email == '' || dadosEmpresa.email.length > 150
     ) {
         return message.ERROR_REQUIRED_DATA
     } else {
@@ -115,11 +115,11 @@ const inserirEmpresa = async function(dadosEmpresa) {
 const atualizarEmpresa = async function(dadosEmpresa, idEmpresa) {
 
     //Validação de dados
-    if (dadosEmpresa.nome_fantasia == undefined || dadosEmpresa.nome_fantasia == '' || dadosEmpresa.nome_fantasia.length > 150 ||
-    dadosEmpresa.cnpj == undefined || dadosEmpresa.cnpj == ''|| dadosEmpresa.cnpj.length > 45 ||
-    dadosEmpresa.razao_social == undefined || dadosEmpresa.razao_social == '' || dadosEmpresa.razao_social.length > 150 ||
-    dadosEmpresa.logo == undefined || dadosEmpresa.logo == '' || dadosEmpresa.logo.length > 300
-        
+    if (dadosEmpresa.telefone == undefined || dadosEmpresa.telefone == '' || dadosEmpresa.telefone.length > 50 ||
+        dadosEmpresa.cnpj == undefined || dadosEmpresa.cnpj == '' || dadosEmpresa.cnpj.length > 45 ||
+        dadosEmpresa.razao_social == undefined || dadosEmpresa.razao_social == '' || dadosEmpresa.razao_social.length > 150 ||
+        dadosEmpresa.email == undefined || dadosEmpresa.email == '' || dadosEmpresa.email.length > 150
+
     ) {
         return message.ERROR_REQUIRED_DATA
 
@@ -131,7 +131,7 @@ const atualizarEmpresa = async function(dadosEmpresa, idEmpresa) {
 
         let selectId = await empresaDAO.selectByIdEmpresa(idEmpresa)
 
-        if(selectId == false){
+        if (selectId == false) {
             return message.ERROR_NOT_FOUND_ID
         }
         //Adiciona o ID no JSON com todos os dados
@@ -183,5 +183,5 @@ module.exports = {
     atualizarEmpresa,
     deletarEmpresa,
     buscarNome
-    
+
 }

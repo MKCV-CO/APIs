@@ -71,16 +71,18 @@ const selectByNomeEmpresa = async function(nome) {
 }
 
 const insertEmpresa = async function(dadosEmpresa) {
+    console.log(dadosEmpresa);
 
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_empresa(telefone,cnpj,id_mensagem,id_tipo_contato,razao_social)
-        values
-        (lower('${dadosEmpresa.telefone}'),
-        lower('${dadosEmpresa.cnpj}'),
-        '${dadosEmpresa.id_mensagem}',
-        '${dadosEmpresa.id_tipo_contato}',
-        lower('${dadosEmpresa.razao_social}'))`
+    let sql = `insert into tbl_empresa(telefone,cnpj,id_mensagem,id_tipo_contato,razao_social,email)
+        values(
+       '${dadosEmpresa.telefone}',
+        '${dadosEmpresa.cnpj}',
+        ${dadosEmpresa.id_mensagem},
+    ${dadosEmpresa.id_tipo_contato},
+    '${dadosEmpresa.email}',
+        '${dadosEmpresa.razao_social}')`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -108,9 +110,12 @@ const updateEmpresa = async function(dadosEmpresa) {
 
 
     let sql = `update tbl_empresa set 
-    cnpj='${dadosEmpresa.cnpj}',
-    razao_social='${dadosEmpresa.razao_social}',
-    logo= lower('${dadosEmpresa.logo}')
+    cnpj ='${dadosEmpresa.cnpj}',
+    razao_social ='${dadosEmpresa.razao_social}',
+    telefone ='${dadosEmpresa.telefone}',
+    email ='${dadosEmpresa.email}',
+    id_mensagem = '${dadosEmpresa.id_mensagem}'
+    id_tipo_contato = '${dadosEmpresa.id_tipo_contato}'
     where id= ${dadosEmpresa.id}`
 
 
