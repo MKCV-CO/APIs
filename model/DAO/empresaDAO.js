@@ -13,7 +13,8 @@ const selectAllEmpresas = async function() {
 		inner join tbl_mensagem
 			on tbl_mensagem.id = tbl_empresa.id_mensagem
 		inner join tbl_tipo_contato
-			on tbl_tipo_contato.id = tbl_empresa.id_tipo_contato;`
+            on tbl_tipo_contato.id = tbl_empresa.id_tipo_contato
+            order by tbl_empresa.id asc;`
 
     let rsEmpresa = await prisma.$queryRawUnsafe(sql)
 
@@ -73,12 +74,13 @@ const insertEmpresa = async function(dadosEmpresa) {
 
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_empresa(nome_fantasia,cnpj,razao_social,logo)
+    let sql = `insert into tbl_empresa(telefone,cnpj,id_mensagem,id_tipo_contato,razao_social)
         values
-        (lower('${dadosEmpresa.nome_fantasia}'),
+        (lower('${dadosEmpresa.telefone}'),
         lower('${dadosEmpresa.cnpj}'),
-        lower('${dadosEmpresa.razao_social}'),
-        lower('${dadosEmpresa.logo}'))`
+        '${dadosEmpresa.id_mensagem}',
+        '${dadosEmpresa.id_tipo_contato}',
+        lower('${dadosEmpresa.razao_social}'))`
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
@@ -106,9 +108,8 @@ const updateEmpresa = async function(dadosEmpresa) {
 
 
     let sql = `update tbl_empresa set 
-    nome_fantasia= lower('${dadosEmpresa.nome_fantasia}'), 
-    cnpj=lower('${dadosEmpresa.cnpj}'),
-    razao_social= lower('${dadosEmpresa.razao_social}'),
+    cnpj='${dadosEmpresa.cnpj}',
+    razao_social='${dadosEmpresa.razao_social}',
     logo= lower('${dadosEmpresa.logo}')
     where id= ${dadosEmpresa.id}`
 
