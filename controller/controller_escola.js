@@ -91,27 +91,30 @@ const inserirEscola = async function(dadosEscola) {
         return message.ERROR_REQUIRED_DATA
 
     } else {
-        controllerEndereco.inserirEndereco(dadosEscola)
+        let endereco = await controllerEndereco.inserirEndereco(dadosEscola)
 
-        let selectEndereco = await enderecoDAO.selectLastId()
+        if (endereco) {
+            let selectEndereco = await enderecoDAO.selectLastId()
 
-        console.log(selectEndereco);
+            dadosEscola.escola.id_endereco = selectEndereco
+            let status = await escolaDAO.insertEscola(dadosEscola)
 
-        dadosEscola.escola.id_endereco = selectEndereco
-        let status = await escolaDAO.insertEscola(dadosEscola)
+            if (status) {
+                let dadosJson = {}
 
-        if (status) {
-            let dadosJson = {}
+                let escolaNovoID = await escolaDAO.selectLastId()
+                dadosEscola.id = escolaNovoID
 
-            let escolaNovoID = await escolaDAO.selectLastId()
-            dadosEscola.id = escolaNovoID
+                dadosJson.status = message.CREATED_ITEM.status
+                dadosJson.escola = dadosEscola
 
-            dadosJson.status = message.CREATED_ITEM.status
-            dadosJson.escola = dadosEscola
-
-            return dadosJson
+                return dadosJson
+            } else
+                return message.ERROR_INTERNAL_SERVER
         } else
-            return message.ERROR_INTERNAL_SERVER
+            return message.ERROR_REQUIRED_DATA
+
+
     }
 
 }
@@ -140,8 +143,10 @@ const atualizarEscola = async function(dadosEscola, idEscola) {
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
 
-        controllerEndereco.atualizarEndereco(dadosEscola, dadosEscola.endereco.id_endereco)
-
+        console.log(dadosEscola);
+        console.log(dadosEscola.endereco.id_endereco);
+        let endereco = await controllerEndereco.atualizarEndereco(dadosEscola, dadosEscola.endereco.id_endereco)
+        console.log(endereco);
         //Adiciona o ID no JSON com todos os dados
         dadosEscola.escola.id = idEscola
             //Encaminha para o DAO os dados para serem alterados
