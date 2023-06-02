@@ -28,7 +28,7 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllVoluntario = async function() {
 
-    let sql = `tbl_voluntario.id,
+    let sql = ` select tbl_voluntario.id,
     tbl_voluntario.nome,
     tbl_voluntario.cpf,
     tbl_voluntario.rg,
