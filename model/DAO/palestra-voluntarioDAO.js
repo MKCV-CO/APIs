@@ -78,11 +78,13 @@ const insertPalestra_Voluntario = async function(dadosPalestra) {
 
 //Modifica um registro do banco de dados
 const updatePalestra_Voluntario = async function(dadosPalestra) {
-    let sql = `update tbl_palestra set
+    let sql = `update tbl_palestra_voluntario set
     id_palestra='${dadosPalestra.id_palestra}',
-    id_voluntario='${dadosPalestra.Id_voluntario}'
+    id_voluntario='${dadosPalestra.id_voluntario}'
     where id = ${dadosPalestra.id}`
 
+
+    console.log(dadosPalestra);
 
     let result = await prisma.$queryRawUnsafe(sql)
 

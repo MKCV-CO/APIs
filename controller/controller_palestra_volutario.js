@@ -77,17 +77,11 @@ const inserirPalestra = async function(dadosPalestra) {
 
         let voluntario = await voluntarioDAO.selectVoluntarioById(dadosPalestra.id_voluntario)
         let palestra = await palestraDAO.selectPalestraById(dadosPalestra.id_palestra)
-        console.log(voluntario);
 
         if (voluntario == false || palestra == false)
             return message.ERROR_NOT_FOUND_FK
 
-        console.log(dadosPalestra);
-
         let status = await palestraVoluntarioDAO.insertPalestra_Voluntario(dadosPalestra)
-
-        console.log(status);
-
 
         if (status) {
             let dadosJson = {}
@@ -108,22 +102,30 @@ const inserirPalestra = async function(dadosPalestra) {
 //Função para receber os dados do APP e enviar para a Model para atualizar um item existente
 const atualizarPalestra = async function(dadosPalestra, idPalestra) {
 
-    //Validação dos dados
-    if (dadosPalestra.objetivo == undefined || dadosPalestra.objetivo == '' ||
-        dadosPalestra.tema == undefined || dadosPalestra.tema == '' || dadosPalestra.tema.length > 100) {
+
+    if (dadosPalestra.id_palestra == undefined || dadosPalestra.id_palestra == '' || isNaN(dadosPalestra.id_palestra) ||
+        dadosPalestra.id_voluntario == undefined || dadosPalestra.id_voluntario == '' || isNaN(dadosPalestra.id_voluntario)) {
+
         return message.ERROR_REQUIRED_DATA
 
     } else {
 
         //Validação para ver se o registro passado existe no bd
-        let selectID = await palestraVoluntarioDAO.selectPalestraById(idPalestra)
+        let selectID = await palestraVoluntarioDAO.selectPalestra_VoluntarioById(idPalestra)
 
         if (selectID == false)
             return message.ERROR_NOT_FOUND_ID
-                //Adiciona o ID no JSON com todos os dados
+
+        let voluntario = await voluntarioDAO.selectVoluntarioById(dadosPalestra.id_voluntario)
+        let palestra = await palestraDAO.selectPalestraById(dadosPalestra.id_palestra)
+
+        if (voluntario == false || palestra == false)
+            return message.ERROR_NOT_FOUND_FK
+
+        //Adiciona o ID no JSON com todos os dados
         dadosPalestra.id = idPalestra
             //Encaminha para o DAO os dados para serem alterados
-        let status = await palestraVoluntarioDAO.updatePalestra(dadosPalestra)
+        let status = await palestraVoluntarioDAO.updatePalestra_Voluntario(dadosPalestra)
 
         if (status) {
             let dadosJson = {}
