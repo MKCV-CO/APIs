@@ -12,19 +12,61 @@ const estadoDAO = require('../model/DAO/estadoDAO.js')
 const message = require('./modulo/config.js')
 
 //Função para retornar todos os itens da tabela recebidos da Model
-const selecionarTodosEstados = async function() {
+const selecionarTodosEstados = async function(sigla = 0) {
 
-    //Solicita ao DAO todos os estados do BD
-    let dadosEstado = await estadoDAO.selectAllEstados()
-        //Cria um objeto do tipo json
+    let dadosEstado
+    let siglaEstado = sigla
+    let listaComidaRepetimento = []
+    let listaBiomaRepetimento = []
+    let listaBioma = []
+    let listaComida = []
+
+
+    //Validação para saber se a sigla foi passada
+    if (siglaEstado == 0) {
+        //Solicita a controller que retorne todos os estados do BD
+        dadosEstado = await estadoDAO.selectAllEstados()
+
+    } else {
+        //Solicita a controller que retorne o estado da sigla informada
+        dadosEstado = await estadoDAO.selectEstadoMapaBySigla(siglaEstado)
+        console.log(dadosEstado);
+    }
+    dadosEstado.map(estado => {
+        listaComidaRepetimento.push(estado.comida)
+        listaBiomaRepetimento.push(estado.bioma)
+
+    })
+
+    //Função para remover o repetimento do array
+    function removerPalavrasRepetidas(array) {
+        let novoArray = [];
+        array.forEach(function(palavra) {
+            if (!novoArray.includes(palavra)) {
+                novoArray.push(palavra);
+            }
+        });
+        return novoArray;
+    }
+
+    listaBioma = removerPalavrasRepetidas(listaBiomaRepetimento)
+    listaComida = removerPalavrasRepetidas(listaComidaRepetimento)
+
+    let jsonMapa = { estado: dadosEstado[0].estado, regiao: dadosEstado[0].regiao, bioma: listaBioma, comida: listaComida, descricao: dadosEstado[0].descricao }
     let dadosJson = {}
 
     //Valida se BD teve registros
     if (dadosEstado) {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
-        dadosJson.count = dadosEstado.length
-        dadosJson.Estados = dadosEstado
+
+        if (jsonMapa.estado != undefined) {
+            dadosJson.estado = jsonMapa
+        } else {
+            dadosJson.count = dadosEstado.length
+            dadosJson.estados = dadosEstado
+        }
+
         return dadosJson
     } else {
         return message.ERROR_NOT_FOUND

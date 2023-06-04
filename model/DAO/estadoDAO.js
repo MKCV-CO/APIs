@@ -72,6 +72,32 @@ const selectEstadoBySigla = async function(sigla) {
     else
         return false
 }
+const selectEstadoMapaBySigla = async function(sigla) {
+
+    let sql = `select tbl_estado.nome as estado, tbl_estado.regiao as regiao,
+    tbl_bioma.nome as bioma,
+    tbl_descricao.descricao,
+    tbl_comida.nome as comida
+from tbl_estado
+     inner join tbl_estado_bioma
+         on tbl_estado.id = tbl_estado_bioma.id_estado
+     inner join tbl_bioma
+         on tbl_bioma.id = tbl_estado_bioma.id_bioma
+     inner join tbl_descricao
+         on tbl_estado.id = tbl_descricao.id_estado
+     inner join tbl_comida
+         on tbl_estado.id = tbl_comida.id_estado
+         where tbl_estado.sigla = "${sigla}"`
+
+    let rsEstado = await prisma.$queryRawUnsafe(sql)
+
+
+    //Valida se o banco de dados retonou algum registro
+    if (rsEstado.length > 0)
+        return rsEstado
+    else
+        return false
+}
 
 //Inseri um novo registro no Banco de Dados
 const insertEstado = async function(dadosEstado) {
@@ -134,5 +160,6 @@ module.exports = {
     selectLastId,
     updateEstado,
     deleteEstado,
-    selectEstadoBySigla
+    selectEstadoBySigla,
+    selectEstadoMapaBySigla
 }

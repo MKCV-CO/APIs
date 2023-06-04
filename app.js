@@ -1061,9 +1061,11 @@ Versão: 1.0
  //EndPoint: Retorna todos os dados de estado
  app.get('/v1/cultural-path/estado', cors(), async function(request, response) {
 
-     //Solicita a controller que retorne todos os estados do BD
-     let dados = await controllerEstado.selecionarTodosEstados()
-         //Valida se existem registros para retornar na requisição
+     //Recebe o id enviado na requisição
+     let sigla = request.query.sigla
+     let dados = await controllerEstado.selecionarTodosEstados(sigla)
+
+     //Valida se existem registros para retornar na requisição
      response.status(dados.status)
 
      response.json(dados)
@@ -1083,6 +1085,7 @@ Versão: 1.0
 
      response.json(dados)
  })
+
 
  //EndPoint: Inseri um novo estado
  app.post('/v1/cultural-path/estado', cors(), bodyJSON, async function(request, response) {
