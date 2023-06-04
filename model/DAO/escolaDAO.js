@@ -77,9 +77,12 @@ const selectEscolaById = async function(id) {
     else
         return false
 }
+
+
+
+
+//Retorna um genero filtrado pelo id
 const selectEscolaByNome = async function(nome) {
-
-
 
     let sql = `select
     tbl_escola.id,
@@ -91,8 +94,10 @@ const selectEscolaByNome = async function(nome) {
     tbl_escola.id_endereco
     from
     tbl_escola
+
     where
     tbl_escola.nome like '%${nome}%';`
+
 
     let rsEscola = await prisma.$queryRawUnsafe(sql)
 

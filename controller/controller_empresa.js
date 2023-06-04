@@ -58,10 +58,14 @@ const buscarIdEmpresa = async function(id) {
     }
 
 }
+
 const buscarNome = async function(nome) {
 
     //Validação para o ID
     if (nome == '' || nome == undefined)
+
+
+
         return message.ERROR_REQUIRED_ID
     else {
         //Solicita ao DAO todos os alunos do BD
@@ -183,5 +187,6 @@ module.exports = {
     atualizarEmpresa,
     deletarEmpresa,
     buscarNome
+
 
 }

@@ -399,6 +399,21 @@ Versão: 1.0
      response.json(dados)
 
  });
+// ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO NOME
+ app.get('/v1/cultural-path/empresa-nome', cors(), bodyJSON, async function(request, response) {
+
+    //Recebe o id enviado na requisição
+    let nomeEmpresa = request.query.nome
+
+    //Solicita a controller que retorne todos os alunos do BD
+    let dados = await controllerEmpresa.buscarNomeEmpresa(nomeEmpresa)
+
+    //Valida se existem registros para retornar na requisição
+    response.status(dados.status)
+
+    response.json(dados)
+
+ });
 
  // ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DE EMPRESA
  app.post('/v1/cultural-path/empresa', bodyJSON, cors(), async function(request, response) {
@@ -479,8 +494,10 @@ Versão: 1.0
 
  })
 
+
  // ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID
  app.get('/v1/cultural-path/email-empresa/empresa/:id', cors(), bodyJSON, async function(request, response) {
+
 
      //Recebe o id enviado na requisição
      let idEmpresa = request.params.id
@@ -495,8 +512,10 @@ Versão: 1.0
 
  });
 
+
  // ENDPOINT: SELECIONA TODAS OS EMAILS DAS EMPRESAS PELO ID
  app.get('/v1/cultural-path/email-empresa/:id', cors(), bodyJSON, async function(request, response) {
+
 
      //Recebe o id enviado na requisição
      let idEmail = request.params.id
@@ -1610,6 +1629,20 @@ Versão: 1.0
      response.json(dados)
  })
 
+ //EndPoint: Retorna dados do voluntario pelo ID
+ app.get('/v1/cultural-path/escola-nome', cors(), async function(request, response) {
+
+     //Recebe o id enviado na requisição
+     let nomeEscola = request.query.nome
+
+     //Solicita a controller que retorne a cidade filtrada pelo ID do BD
+     let dados = await controllerEscola.buscarNomeEscola(nomeEscola)
+
+     //Valida se existem registros para retornar na requisição
+     response.status(dados.status)
+
+     response.json(dados)
+ })
  //EndPoint: Retorna dados do voluntario pelo ID
  app.get('/v1/cultural-path/escola/:id', cors(), async function(request, response) {
 
