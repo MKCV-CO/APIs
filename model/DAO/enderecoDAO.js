@@ -65,25 +65,7 @@ const selectCidadeByName = async function(nome) {
 const selectEnderecoById = async function(id) {
 
 
-    let sql = `select tbl_endereco.id as id_endereco,
-    tbl_endereco.logradouro,
-    tbl_endereco.cep,
-    tbl_endereco.numero,
-    tbl_endereco.complemento,
-    tbl_endereco.bairro,
-    tbl_endereco.id_cidade,
-    tbl_cidade.nome as cidade,
-    tbl_cidade.id_estado,
-    tbl_estado.nome as estado,
-    tbl_estado.sigla as sigla_estado,
-    tbl_estado.regiao
-    from  tbl_endereco
-		inner join tbl_cidade
-			on tbl_cidade.id = tbl_endereco.id_cidade
-		inner join tbl_estado
-			on tbl_estado.id = tbl_cidade.id_estado
-    where 
-    tbl_endereco.id = ${id}
+    let sql = `select * from vwEndereco where id_endereco = ${id}
     ;`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
@@ -97,28 +79,7 @@ const selectEnderecoById = async function(id) {
 const selectEnderecoByIdVoluntario = async function(id) {
 
 
-    let sql = `select tbl_endereco.id as id_endereco,
-    tbl_endereco.logradouro,
-    tbl_endereco.cep,
-    tbl_endereco.numero,
-    tbl_endereco.complemento,
-    tbl_endereco.bairro,
-    tbl_endereco.id_cidade,
-    tbl_cidade.nome as cidade,
-    tbl_cidade.id_estado,
-    tbl_estado.nome as estado,
-    tbl_estado.sigla as sigla_estado,
-    tbl_estado.regiao
-    from tbl_voluntario 
-		inner join tbl_endereco
-			on tbl_voluntario.id_endereco = tbl_endereco.id
-		inner join tbl_cidade
-			on tbl_cidade.id = tbl_endereco.id_cidade
-		inner join tbl_estado
-			on tbl_estado.id = tbl_cidade.id_estado
-    where 
-    tbl_voluntario.id = ${id} and
-    tbl_voluntario.id_endereco = tbl_endereco.id ;`
+    let sql = `  select * from vwEnderecoVoluntario where id_voluntario = ${id}`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
 
@@ -131,28 +92,7 @@ const selectEnderecoByIdVoluntario = async function(id) {
 const selectEnderecoByIdEscola = async function(id) {
 
 
-    let sql = `select tbl_endereco.id as id_endereco,
-    tbl_endereco.logradouro,
-    tbl_endereco.cep,
-    tbl_endereco.numero,
-    tbl_endereco.complemento,
-    tbl_endereco.bairro,
-    tbl_endereco.id_cidade,
-    tbl_cidade.nome as cidade,
-    tbl_cidade.id_estado,
-    tbl_estado.nome as estado,
-    tbl_estado.sigla as sigla_estado,
-    tbl_estado.regiao
-    from tbl_escola 
-		inner join tbl_endereco
-			on tbl_escola.id_endereco = tbl_endereco.id
-		inner join tbl_cidade
-			on tbl_cidade.id = tbl_endereco.id_cidade
-		inner join tbl_estado
-			on tbl_estado.id = tbl_cidade.id_estado
-    where 
-    tbl_escola.id = ${id} and
-    tbl_escola.id_endereco = tbl_endereco.id ;`
+    let sql = `   select * from vwEnderecoEscola where id_escola = ${id};`
 
     let rsEndereco = await prisma.$queryRawUnsafe(sql)
 

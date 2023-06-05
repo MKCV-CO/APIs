@@ -28,16 +28,7 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllEscola = async function() {
 
-    let sql = `select
-    tbl_escola.id,
-    tbl_escola.nome,
-    tbl_escola.cnpj,
-    tbl_escola.responsavel,
-    tbl_escola.telefone,
-    tbl_escola.email,
-    tbl_escola.id_endereco
-    from
-    tbl_escola;`
+    let sql = `select * from vwEscola;`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -56,18 +47,7 @@ const selectAllEscola = async function() {
 const selectEscolaById = async function(id) {
 
 
-    let sql = `select
-    tbl_escola.id,
-    tbl_escola.nome,
-    tbl_escola.cnpj,
-    tbl_escola.responsavel,
-    tbl_escola.telefone,
-    tbl_escola.email,
-    tbl_escola.id_endereco
-    from
-    tbl_escola
-    where 
-    tbl_escola.id = ${id};`
+    let sql = `select * from vwEscola where id = ${id};`
 
     let rsEscola = await prisma.$queryRawUnsafe(sql)
 
@@ -77,10 +57,6 @@ const selectEscolaById = async function(id) {
     else
         return false
 }
-
-
-
-
 //Retorna um genero filtrado pelo id
 const selectEscolaByNome = async function(nome) {
 
@@ -109,9 +85,6 @@ const selectEscolaByNome = async function(nome) {
 }
 
 const selectEscolaByIdPalestra = async function(id) {
-
-    console.log(id);
-
 
     let sql = `select
     tbl_escola.id,

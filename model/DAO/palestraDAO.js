@@ -28,7 +28,7 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllPalestra = async function() {
 
-    let sql = 'select * from tbl_palestra'
+    let sql = 'select * from vwPalestra'
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável

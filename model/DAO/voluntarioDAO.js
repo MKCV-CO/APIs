@@ -28,19 +28,7 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllVoluntario = async function() {
 
-    let sql = `select tbl_voluntario.id,
-    tbl_voluntario.nome,
-    tbl_voluntario.cpf,
-    tbl_voluntario.rg,
-    tbl_voluntario.email,
-    tbl_voluntario.telefone,
-    date_format(tbl_voluntario.data_nascimento, "%d/%m/%Y") as data_nascimento ,
-   round(datediff(current_date(),tbl_voluntario.data_nascimento)/364.25) as idade,
-    tbl_voluntario.foto_rg,
-    tbl_voluntario.foto_diploma,
-    tbl_voluntario.contribuicao
-    from 
-    tbl_voluntario`
+    let sql = `select * from vwVoluntarios;`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável

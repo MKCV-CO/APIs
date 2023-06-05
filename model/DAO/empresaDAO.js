@@ -8,13 +8,7 @@ const prisma = new PrismaClient()
 //Função para retornar um registro filtrado pelo id do Banco de Dados
 const selectAllEmpresas = async function() {
 
-    let sql = `select tbl_empresa.id, tbl_empresa.cnpj, tbl_empresa.razao_social,tbl_empresa.email,tbl_empresa.telefone,tbl_mensagem.mensagem, tbl_tipo_contato.nome as contato
-    from tbl_empresa
-		inner join tbl_mensagem
-			on tbl_mensagem.id = tbl_empresa.id_mensagem
-		inner join tbl_tipo_contato
-            on tbl_tipo_contato.id = tbl_empresa.id_tipo_contato
-            order by tbl_empresa.id asc;`
+    let sql = `select * from vwEmpresa;`
 
     let rsEmpresa = await prisma.$queryRawUnsafe(sql)
 
@@ -32,13 +26,7 @@ const selectAllEmpresas = async function() {
 const selectByIdEmpresa = async function(id) {
 
 
-    let sql = `select tbl_empresa.id, tbl_empresa.cnpj, tbl_empresa.razao_social,tbl_empresa.email,tbl_empresa.telefone,tbl_mensagem.mensagem, tbl_tipo_contato.nome as contato
-    from tbl_empresa
-		inner join tbl_mensagem
-			on tbl_mensagem.id = tbl_empresa.id_mensagem
-		inner join tbl_tipo_contato
-            on tbl_tipo_contato.id = tbl_empresa.id_tipo_contato
-        where tbl_empresa.id = ${id};`
+    let sql = `select * from vwEmpresa where id=${id};`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável

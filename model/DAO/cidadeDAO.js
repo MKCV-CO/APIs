@@ -28,13 +28,7 @@ const selectLastId = async function() {
 //Retorna todos os registros do Banco de Dados
 const selectAllCidades = async function() {
 
-    let sql = `select tbl_cidade.id as id_cidade,
-    tbl_cidade.nome as nome_cidade,
-    tbl_estado.id as id_estado,
-    tbl_estado.nome as nome_estado,
-    tbl_estado.sigla  
-    from tbl_cidade, tbl_estado 
-    where tbl_cidade.id_estado = tbl_estado.id`
+    let sql = `select * from vwCidade;`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -53,14 +47,7 @@ const selectAllCidades = async function() {
 const selectCidadeById = async function(id) {
 
 
-    let sql = `select tbl_cidade.id as id_cidade,
-    tbl_cidade.nome as nome_cidade,
-    tbl_estado.id as id_estado,
-    tbl_estado.nome as nome_estado,
-    tbl_estado.sigla  
-    from tbl_cidade, tbl_estado 
-    where tbl_cidade.id_estado = tbl_estado.id and 
-    tbl_cidade.id = ${id}`
+    let sql = `select * from vwCidadeId where  id_cidade = ${id}`
 
     let rsCidade = await prisma.$queryRawUnsafe(sql)
 
