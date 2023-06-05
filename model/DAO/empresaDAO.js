@@ -69,23 +69,7 @@ const selectByNomeEmpresa = async function(nome) {
     else
         return false
 }
-const selectByNomeEmpresa = async function(nome) {
 
-
-    let sql = `select * from tbl_empresa where razao_social like '%${nome}%'`
-
-    //Executa no banco de dados o scriptSQL
-    //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
-    //$queryRaw é utilizado quando passar o script direto no métodos
-    //Ex: $queryRaw('select * from tbl_aluno')
-    let rsEmpresa = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retonou algum registro
-    if (rsEmpresa.length > 0)
-        return rsEmpresa
-    else
-        return false
-}
 
 const insertEmpresa = async function(dadosEmpresa) {
     console.log(dadosEmpresa);
