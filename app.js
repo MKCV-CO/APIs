@@ -32,6 +32,9 @@
  //Cria um objeto com as informações da classe express
  const app = express()
 
+ const port = process.env.PORT || 8080
+
+
  //Defie as permissões no header da API
  app.use((request, response, next) => {
      //Permite gerenciar a origen das requisiçõe da API
@@ -1423,7 +1426,7 @@
      response.json(resultDeleteDados)
  })
 
- app.listen(8080, function() {
+ app.listen(port, function() {
      console.log('Servidor aguardando requisições');
 
  })

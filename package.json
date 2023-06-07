@@ -8,5 +8,11 @@
   },
   "devDependencies": {
     "@azure/functions": "^3.5.1"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "scripts": {
+    "start": "node app.js"
   }
 }
