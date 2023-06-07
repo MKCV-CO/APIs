@@ -6,7 +6,7 @@
  ************************************************************************************/
 
 
-const empresaDAO = require('../Model/DAO/empresaDAO.js');
+const empresaDAO = require('../model/DAO/empresaDAO.js');
 
 const message = require('./modulo/config.js')
 
