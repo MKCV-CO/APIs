@@ -109,12 +109,15 @@ const inserirPalestra = async function(dadosPalestra) {
 //Função para receber os dados do APP e enviar para a Model para atualizar um item existente
 const atualizarPalestra = async function(dadosPalestra, idPalestra) {
 
+    console.log(dadosPalestra);
     //Validação dos dados
     if (dadosPalestra.objetivo == undefined || dadosPalestra.objetivo == '' ||
+        dadosPalestra.id_escola == undefined || dadosPalestra.id_escola == '' || isNaN(dadosPalestra.id_escola) ||
         dadosPalestra.tema == undefined || dadosPalestra.tema == '' || dadosPalestra.tema.length > 100) {
         return message.ERROR_REQUIRED_DATA
             //Validação da data
-    } else if (dadosPalestra.data == undefined || dadosPalestra.data == '' || validarDataMySQL(dadosPalestra.data) == false) {
+    } else if (dadosPalestra.data_palestra == undefined || dadosPalestra.data_palestra == '' || validarDataMySQL(dadosPalestra.data_palestra) == false) {
+
         return message.ERROR_INVALID_DATE_FORMAT
     } else {
 

@@ -6,15 +6,15 @@ const prisma = new PrismaClient()
 
 
 //Função para retornar um registro filtrado pelo id do Banco de Dados
-const selectAllVideosPalestra = async function(){
-  
-    let sql = 'select * from tbl_videosPalestra'
+const selectAllVideosPalestra = async function() {
+
+    let sql = 'select * from tbl_videoPalestra'
 
     let rsvideos = await prisma.$queryRawUnsafe(sql)
 
-    if(rsvideos.length > 0){
+    if (rsvideos.length > 0) {
         return rsvideos
-    }else{
+    } else {
         return false
     }
 
@@ -23,7 +23,7 @@ const selectAllVideosPalestra = async function(){
 const selectByIdVideo = async function(id) {
 
 
-    let sql = `select * from tbl_videosPalestra where id = ${id}`
+    let sql = `select * from tbl_videoPalestra where id = ${id}`
 
     //Executa no banco de dados o scriptSQL
     //$queryRawUnsafe é utilizado quando o scriptSQL está em uma variável
@@ -42,16 +42,18 @@ const insertVideoPalestra = async function(dadosVideos) {
 
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_videosPalestra(video,descricao)
-        values
-        (lower('${dadosVideos.video}'),
-        lower('${dadosVideos.descricao}'))`
+    let sql = `insert into tbl_videoPalestra(video,descricao,id_palestra,nome)
+    values
+    ('${dadosVideos.video}',
+    '${dadosVideos.descricao}',
+    '${dadosVideos.id_palestra}',
+    '${dadosVideos.nome}')`
 
-        
+
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
-    
+
     if (result)
         return true
     else
@@ -61,7 +63,7 @@ const insertVideoPalestra = async function(dadosVideos) {
 const selectLastId = async function() {
 
     //Script para retornar apenas o ultimo registro inserido na tabela
-    let sql = `select id from tbl_videosPalestra order by id desc limit 1;`
+    let sql = `select id from tbl_videoPalestra order by id desc limit 1;`
 
     let rsvideos = await prisma.$queryRawUnsafe(sql)
 
@@ -71,12 +73,13 @@ const selectLastId = async function() {
         return false
 }
 
-const updateVideo = async function (dadosVideos) {
-    let sql = `update tbl_videosPalestra set 
-    video= lower('${dadosVideos.video}'),
-    descricao= lower('${dadosVideos.descricao}')
+const updateVideo = async function(dadosVideos) {
+    let sql = `update tbl_videoPalestra set 
+    video='${dadosVideos.video}',
+    descricao= '${dadosVideos.descricao}',
+    nome= '${dadosVideos.nome}',
+    id_palestra= '${dadosVideos.id_palestra}'
     where id= '${dadosVideos.id}'`
-
 
     let result = await prisma.$queryRawUnsafe(sql)
 
@@ -91,7 +94,7 @@ const updateVideo = async function (dadosVideos) {
 
 const deleteVideo = async function(id) {
 
-    let sql = `delete from tbl_videosPalestra where id=${id}`
+    let sql = `delete from tbl_videoPalestra where id=${id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 

@@ -17,7 +17,7 @@ const selecionarTodasAsFotos = async function() {
     //Solicita ao DAO todos as empresas do BD
     let dadosFotos = await fotosDAO.selectAllFotos()
 
-    
+
     //Cria um objeto do tipo json
     let dadosJson = {}
 
@@ -25,7 +25,7 @@ const selecionarTodasAsFotos = async function() {
     if (dadosFotos) {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
-        dadosJson.count =   dadosFotos.length
+        dadosJson.count = dadosFotos.length
         dadosJson.Fotos = dadosFotos
         return dadosJson
     } else {
@@ -62,6 +62,7 @@ const buscarIdFotos = async function(id) {
 const inserirFoto = async function(dadosFotos) {
 
     if (dadosFotos.foto == undefined || dadosFotos.foto == " " || dadosFotos.foto > 300 ||
+        dadosFotos.id_palestra == undefined || dadosFotos.id_palestra == '' || isNaN(dadosFotos.id_palestra) ||
         dadosFotos.descricao == undefined || dadosFotos.descricao == "" || dadosFotos.descricao > 500
     ) {
         return message.ERROR_REQUIRED_DATA
@@ -90,8 +91,9 @@ const atualizarFotos = async function(dadosFotos, idFoto) {
 
     //Validação de dados
     if (dadosFotos.foto == undefined || dadosFotos.foto == "" || dadosFotos.foto > 300 ||
+        dadosFotos.id_palestra == undefined || dadosFotos.id_palestra == '' || isNaN(dadosFotos.id_palestra) ||
         dadosFotos.descricao == undefined || dadosFotos.descricao == "" || dadosFotos.descricao > 500
-        
+
     ) {
         return message.ERROR_REQUIRED_DATA
 
@@ -103,7 +105,7 @@ const atualizarFotos = async function(dadosFotos, idFoto) {
 
         let selectId = await fotosDAO.selectByIdFoto(idFoto)
 
-        if(selectId == false){
+        if (selectId == false) {
             return message.ERROR_NOT_FOUND_ID
         }
         //Adiciona o ID no JSON com todos os dados

@@ -17,7 +17,7 @@ const selecionarTodosOsVideosPalestra = async function() {
     //Solicita ao DAO todos as empresas do BD
     let dadosVideos = await videosDAO.selectAllVideosPalestra()
 
-    
+
     //Cria um objeto do tipo json
     let dadosJson = {}
 
@@ -25,7 +25,7 @@ const selecionarTodosOsVideosPalestra = async function() {
     if (dadosVideos) {
         //Adiciona o array de alunos em um JSON para retornar ao app
         dadosJson.status = 200
-        dadosJson.count =   dadosVideos.length
+        dadosJson.count = dadosVideos.length
         dadosJson.videos = dadosVideos
         return dadosJson
     } else {
@@ -62,6 +62,7 @@ const buscarIdVideo = async function(id) {
 const inserirVideo = async function(dadosVideos) {
 
     if (dadosVideos.video == undefined || dadosVideos.videos == " " || dadosVideos.videos > 300 ||
+        dadosVideos.id_palestra == undefined || dadosVideos.id_palestra == '' || isNaN(dadosVideos.id_palestra) ||
         dadosVideos.descricao == undefined || dadosVideos.descricao == "" || dadosVideos.descricao > 500
     ) {
         return message.ERROR_REQUIRED_DATA
@@ -90,8 +91,9 @@ const atualizarVideos = async function(dadosVideos, idVideo) {
 
     //Validação de dados
     if (dadosVideos.video == undefined || dadosVideos.videos == " " || dadosVideos.videos > 300 ||
+        dadosVideos.id_palestra == undefined || dadosVideos.id_palestra == '' || isNaN(dadosVideos.id_palestra) ||
         dadosVideos.descricao == undefined || dadosVideos.descricao == "" || dadosVideos.descricao > 500
-        
+
     ) {
         return message.ERROR_REQUIRED_DATA
 
@@ -103,7 +105,7 @@ const atualizarVideos = async function(dadosVideos, idVideo) {
 
         let selectId = await videosDAO.selectByIdVideo(idVideo)
 
-        if(selectId == false){
+        if (selectId == false) {
             return message.ERROR_NOT_FOUND_ID
         }
         //Adiciona o ID no JSON com todos os dados

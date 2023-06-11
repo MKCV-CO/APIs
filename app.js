@@ -168,7 +168,7 @@
   * Versão: 1.0
   ***************************************************/
 
- //EndPoint: Retorna todos os dados do voluntario
+ //EndPoint: Retorna todos os dados da Empresa
  app.get('/v1/cultural-path/palestra-empresa', cors(), async function(request, response) {
 
      //Solicita a controller que retorne todos as cidades do BD
@@ -179,7 +179,7 @@
      response.json(dados)
  })
 
- //EndPoint: Retorna dados do voluntario pelo ID
+ //EndPoint: Retorna dados da empresa pelo ID
  app.get('/v1/cultural-path/palestra-empresa/:id', cors(), async function(request, response) {
 
      //Recebe o id enviado na requisição
@@ -194,7 +194,7 @@
      response.json(dados)
  })
 
- //EndPoint: Inseri um novo voluntario
+ //EndPoint: Inseri uma nove empresa
  app.post('/v1/cultural-path/palestra-empresa', cors(), bodyJSON, async function(request, response) {
 
      let contentType = request.headers['content-type']
@@ -216,7 +216,7 @@
      }
  })
 
- //EndPoint: Atualiza um voluntario pelo id
+ //EndPoint: Atualiza uma empresa pelo id
  app.put('/v1/cultural-path/palestra-empresa/:id', cors(), bodyJSON, async function(request, response) {
      let contentType = request.headers['content-type']
 
@@ -237,7 +237,7 @@
 
  })
 
- //EndPoint: Deleta um voluntario pelo id
+ //EndPoint: Deleta uma empresa pelo id
  app.delete('/v1/cultural-path/palestra-empresa/:id', cors(), bodyJSON, async function(request, response) {
 
      //Recebe os dados do Body
@@ -286,34 +286,19 @@
      response.json(dados)
 
  });
- // ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO ID
+ // ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO NOME
  app.get('/v1/cultural-path/empresa-nome', cors(), bodyJSON, async function(request, response) {
 
      //Recebe o id enviado na requisição
      let nomeEmpresa = request.query.nome
 
      //Solicita a controller que retorne todos os alunos do BD
-     let dados = await controllerEmpresa.buscarNome(nomeEmpresa)
+     let dados = await controllerEmpresa.buscarNomeEmpresa(nomeEmpresa)
 
      //Valida se existem registros para retornar na requisição
      response.status(dados.status)
 
      response.json(dados)
-
- });
-// ENDPOINT: SELECIONA TODAS AS EMPRESAS PELO NOME
- app.get('/v1/cultural-path/empresa-nome', cors(), bodyJSON, async function(request, response) {
-
-    //Recebe o id enviado na requisição
-    let nomeEmpresa = request.query.nome
-
-    //Solicita a controller que retorne todos os alunos do BD
-    let dados = await controllerEmpresa.buscarNomeEmpresa(nomeEmpresa)
-
-    //Valida se existem registros para retornar na requisição
-    response.status(dados.status)
-
-    response.json(dados)
 
  });
 
@@ -655,124 +640,13 @@
 
  })
 
-
- /*********************************
- Objetvo:  Tabela ESTADO-COMIDA
- Data: 22/05/2023
- Autor: Kauê - MKVC
- Versão: 1.0
- *****************************/
- // ENDPOINT: SELECIONA TODOS OS ESTADOS DO MAPA
- app.get('/v1/cultural-path/estado-comida', cors(), async function(request, response) {
-
-     //Solicita a controller que retorne todos os alunos do BD
-     let dados = await controller_estadoMapa.selecionarTodosOsEstadosMapa();
-
-     //Valida se existem registros para retornar na requisição
-     response.status(dados.status)
-
-     response.json(dados)
-
- })
-
- // ENDPOINT: SELECIONA TODAS OS ESTADOS DO MAPA PELO ID
- app.get('/v1/cultural-path/estado-mapa/:id', cors(), bodyJSON, async function(request, response) {
-
-     //Recebe o id enviado na requisição
-     let idEstado = request.params.id
-
-     //Solicita a controller que retorne todos os alunos do BD
-     let dados = await controller_estadoMapa.buscarIdEstado(idEstado)
-
-     //Valida se existem registros para retornar na requisição
-     response.status(dados.status)
-
-     response.json(dados)
-
- });
-
- // ENDPOINT: SELECIONA TODAS OS ESTADOS DO MAPA PELA SIGLA
- app.get('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async function(request, response) {
-
-     //Recebe o id enviado na requisição
-     let siglaEstado = request.params.sigla
-         //Solicita a controller que retorne todos os alunos do BD
-     let dados = await controller_estadoMapa.buscarSigla(siglaEstado)
-
-     //Valida se existem registros para retornar na requisição
-     response.status(dados.status)
-
-     response.json(dados)
-
- });
-
- // ENDPOINT: ENVIA DADOS PARA UM NOVO CADASTRO DO ESTADO
- app.post('/v1/cultural-path/estado-comida', bodyJSON, cors(), async function(request, response) {
-     let contentType = request.headers['content-type']
-
-     if (String(contentType).toLowerCase() == 'application/json') {
-         //Recebe os dados encaminhados no body da requisição
-         let dadosBody = request.body
-
-         //Envia os dados para a controller
-         let resultInsertDados = await controller_estadoMapa.inserirEstado(dadosBody)
-
-         //Retorna o status code e a message
-         response.status(resultInsertDados.status)
-         response.json(resultInsertDados)
-     } else {
-
-         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
-         response.json(message.ERROR_INVALID_CONTENT_TYPE)
-     }
- })
-
- // ENDPOINT: ATUALIZA O ESTADO PELO ID
- app.put('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async function(request, response) {
-
-     let contentType = request.headers['content-type']
-
-     if (String(contentType).toLowerCase() == 'application/json') {
-         //Recebe os dados do Body
-         let dadosBody = request.body
-
-         //Recebe o id do aluno
-         let idEstado = request.params.id
-         let resultUpdatedados = await controller_estadoMapa.atualizarEstado(dadosBody, idEstado)
-
-         response.status(resultUpdatedados.status)
-         response.json(resultUpdatedados)
-     } else {
-
-         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
-         response.json(message.ERROR_INVALID_CONTENT_TYPE)
-     }
-
- })
-
- // ENDPOINT: DELETA O REGISTRO DO ESTADO PELO ID
- app.delete('/v1/cultural-path/estado-comida/:id', cors(), bodyJSON, async function(request, response) {
-     //Recebe os dados do Body
-     let dadosBody = request.body
-
-     //Recebe o id do aluno
-     let idEstado = request.params.id
-
-     let resultDeleteDados = await controller_estadoMapa.deletarEstado(dadosBody, idEstado)
-
-     response.status(resultDeleteDados.status)
-     response.json(resultDeleteDados)
-
- })
-
  /****************************************************
   * Objetvo: Tabela Estado
   * Data: 21/05/2023
   * Versão: 1.0
   ***************************************************/
 
-
- //EndPoint: Retorna todos os dados de estado
+ //EndPoint: Retorna todos os dados de estado ou o estado com bioma, descricao, e comidas tipicas
  app.get('/v1/cultural-path/estado', cors(), async function(request, response) {
 
      //Recebe o id enviado na requisição
@@ -799,7 +673,6 @@
 
      response.json(dados)
  })
-
 
  //EndPoint: Inseri um novo estado
  app.post('/v1/cultural-path/estado', cors(), bodyJSON, async function(request, response) {
@@ -934,7 +807,7 @@
 
  })
 
- //EndPoint: Deleta um estado pelo id
+ //EndPoint: Deleta uma cidade pelo id
  app.delete('/v1/cultural-path/cidade/:id', cors(), bodyJSON, async function(request, response) {
 
      //Recebe os dados do Body
@@ -982,7 +855,6 @@
  })
 
  //EndPoint: Inseri um novo genero
-
  app.post('/v1/cultural-path/genero', cors(), bodyJSON, async function(request, response) {
 
      let contentType = request.headers['content-type']
@@ -1223,7 +1095,7 @@
   * Versão: 1.0
   ***************************************************/
 
- //EndPoint: Retorna todos os dados do voluntario
+ //EndPoint: Retorna todos os dados da palestra
  app.get('/v1/cultural-path/palestra', cors(), async function(request, response) {
 
      //Solicita a controller que retorne todos as cidades do BD
@@ -1234,7 +1106,7 @@
      response.json(dados)
  })
 
- //EndPoint: Retorna dados do voluntario pelo ID
+ //EndPoint: Retorna dados da palestra pelo ID
  app.get('/v1/cultural-path/palestra/:id', cors(), async function(request, response) {
 
      //Recebe o id enviado na requisição
@@ -1249,7 +1121,7 @@
      response.json(dados)
  })
 
- //EndPoint: Inseri um novo voluntario
+ //EndPoint: Inseri uma nova palestra
  app.post('/v1/cultural-path/palestra', cors(), bodyJSON, async function(request, response) {
 
      let contentType = request.headers['content-type']
@@ -1271,7 +1143,7 @@
      }
  })
 
- //EndPoint: Atualiza um voluntario pelo id
+ //EndPoint: Atualiza uma palestra pelo id
  app.put('/v1/cultural-path/palestra/:id', cors(), bodyJSON, async function(request, response) {
      let contentType = request.headers['content-type']
 
@@ -1292,7 +1164,7 @@
 
  })
 
- //EndPoint: Deleta um voluntario pelo id
+ //EndPoint: Deleta uma palestra pelo id
  app.delete('/v1/cultural-path/palestra/:id', cors(), bodyJSON, async function(request, response) {
 
      //Recebe os dados do Body
@@ -1313,7 +1185,7 @@
   * Versão: 1.0
   ***************************************************/
 
- //EndPoint: Retorna todos os dados do voluntario
+ //EndPoint: Retorna todos os dados da escola
  app.get('/v1/cultural-path/escola', cors(), async function(request, response) {
 
      //Solicita a controller que retorne todos as cidades do BD
@@ -1324,7 +1196,7 @@
      response.json(dados)
  })
 
- //EndPoint: Retorna dados do voluntario pelo ID
+ //EndPoint: Retorna dados da escola pelo nome
  app.get('/v1/cultural-path/escola-nome', cors(), async function(request, response) {
 
      //Recebe o id enviado na requisição
@@ -1338,30 +1210,15 @@
 
      response.json(dados)
  })
- //EndPoint: Retorna dados do voluntario pelo ID
+
+ //EndPoint: Retorna dados da escola pelo ID
  app.get('/v1/cultural-path/escola/:id', cors(), async function(request, response) {
 
-         //Recebe o id enviado na requisição
-         let idEscola = request.params.id
-
-         //Solicita a controller que retorne a cidade filtrada pelo ID do BD
-         let dados = await controllerEscola.buscarIdEscola(idEscola)
-
-         //Valida se existem registros para retornar na requisição
-         response.status(dados.status)
-
-         response.json(dados)
-     })
-     //EndPoint: Retorna dados do voluntario pelo ID
- app.get('/v1/cultural-path/escola-nome', cors(), async function(request, response, next) {
-
      //Recebe o id enviado na requisição
-     let nomeEscola = request.query.nome
-
-
+     let idEscola = request.params.id
 
      //Solicita a controller que retorne a cidade filtrada pelo ID do BD
-     let dados = await controllerEscola.buscarNomeEscola(nomeEscola)
+     let dados = await controllerEscola.buscarIdEscola(idEscola)
 
      //Valida se existem registros para retornar na requisição
      response.status(dados.status)
@@ -1369,7 +1226,7 @@
      response.json(dados)
  })
 
- //EndPoint: Inseri um novo voluntario
+ //EndPoint: Inseri uma nova escola
  app.post('/v1/cultural-path/escola', cors(), bodyJSON, async function(request, response) {
 
      let contentType = request.headers['content-type']
@@ -1412,7 +1269,7 @@
 
  })
 
- //EndPoint: Deleta um voluntario pelo id
+ //EndPoint: Deleta uma escola pelo id
  app.delete('/v1/cultural-path/escola/:id', cors(), bodyJSON, async function(request, response) {
 
      //Recebe os dados do Body

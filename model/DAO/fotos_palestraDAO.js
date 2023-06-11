@@ -6,15 +6,15 @@ const prisma = new PrismaClient()
 
 
 //Função para retornar um registro filtrado pelo id do Banco de Dados
-const selectAllFotos = async function(){
-  
+const selectAllFotos = async function() {
+
     let sql = 'select * from tbl_fotosPalestra'
 
     let rsFotos = await prisma.$queryRawUnsafe(sql)
 
-    if(rsFotos.length > 0){
+    if (rsFotos.length > 0) {
         return rsFotos
-    }else{
+    } else {
         return false
     }
 
@@ -42,16 +42,18 @@ const insertFoto = async function(dadosFotos) {
 
 
     //Script sql para inserir os dados no BD
-    let sql = `insert into tbl_fotosPalestra(foto,descricao)
+    let sql = `insert into tbl_fotosPalestra(foto,descricao,id_palestra,nome)
         values
-        (lower('${dadosFotos.foto}'),
-        lower('${dadosFotos.descricao}'))`
+        ('${dadosFotos.foto}',
+        '${dadosFotos.descricao}',
+        '${dadosFotos.id_palestra}',
+        '${dadosFotos.nome}')`
 
-        
+
 
     //Executa o script sql no banco de dados e recebemos o retorno se deu certo ou não
     let result = await prisma.$executeRawUnsafe(sql)
-    
+
     if (result)
         return true
     else
@@ -71,9 +73,12 @@ const selectLastId = async function() {
         return false
 }
 
-const updateFoto = async function (dadosFotos) {
+const updateFoto = async function(dadosFotos) {
     let sql = `update tbl_fotosPalestra set 
-    foto=lower('${dadosFotos.foto}'),descricao= lower('${dadosFotos.descricao}')
+    foto='${dadosFotos.foto}',
+    descricao= '${dadosFotos.descricao}',
+    nome= '${dadosFotos.nome}',
+    id_palestra= '${dadosFotos.id_palestra}'
     where id= '${dadosFotos.id}'`
 
 

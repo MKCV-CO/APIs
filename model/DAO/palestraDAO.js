@@ -83,7 +83,8 @@ const updatePalestra = async function(dadosPalestra) {
     let sql = `update tbl_palestra set
     objetivo='${dadosPalestra.objetivo}',
     tema='${dadosPalestra.tema}',
-    data='${dadosPalestra.data}'
+    data_palestra='${dadosPalestra.data_palestra}',
+    id_escola="${dadosPalestra.id_escola}"
     where id = ${dadosPalestra.id}`
 
 

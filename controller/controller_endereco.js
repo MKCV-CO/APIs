@@ -66,15 +66,14 @@ const inserirEndereco = async function(dadosEndereco) {
         if (dadosEndereco.endereco.logradouro == undefined || dadosEndereco.endereco.logradouro == '' || dadosEndereco.endereco.logradouro.length > 100 ||
             dadosEndereco.endereco.cep == undefined || dadosEndereco.endereco.cep == '' || dadosEndereco.endereco.cep.length > 10 ||
             dadosEndereco.endereco.numero == undefined || dadosEndereco.endereco.numero == '' || dadosEndereco.endereco.numero.length > 10 ||
-            dadosEndereco.endereco.complemento == undefined || dadosEndereco.endereco.complemento == '' || dadosEndereco.endereco.complemento.length > 15 ||
             dadosEndereco.endereco.bairro == undefined || dadosEndereco.endereco.bairro == '' || dadosEndereco.endereco.bairro.length > 50 ||
             dadosEndereco.endereco.cidade == undefined || dadosEndereco.endereco.cidade == '' ||
             dadosEndereco.endereco.estado == undefined || dadosEndereco.endereco.estado == '') {
             return message.ERROR_REQUIRED_DATA
         } else {
-            
+
             let selectCidade = await enderecoDAO.selectCidadeByName(dadosEndereco.endereco.cidade)
-            
+
 
             if (selectCidade) {
 
@@ -95,10 +94,10 @@ const inserirEndereco = async function(dadosEndereco) {
                     return message.ERROR_INTERNAL_SERVER
             } else {
 
-                
+
                 let selectEstado = await estadoDAO.selectEstadoBySigla(dadosEndereco.endereco.estado)
-                
-                
+
+
                 if (selectEstado) {
                     let cidadeJson = {
                         "nome": `${dadosEndereco.endereco.cidade}`,
